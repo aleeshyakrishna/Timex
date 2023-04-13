@@ -1,0 +1,124 @@
+<section class="">
+  <div class="container d-flex justify-content-center">
+    <div class="row w-75 mt-5">
+      <div class="col-md-12">
+        <h2 class="text-center">Add Product</h2>
+        <form
+          
+          onsubmit="return validate()"
+          method="POST"
+          action="/admin/add-product"
+          enctype="multipart/form-data"
+          
+        >
+          <label for="">Product Name</label>
+          <input type="text" name="name" id="name" class="form-control" required/>
+          <label for="">Description</label>
+          <input type="text" name="description" id="description" class="form-control" required />
+
+          <label for="">Quantity</label>
+          <input type="text" id="quantity" name="quantity" class="form-control" required />
+
+
+          <!-- <label for="">Category</label>
+          <input type="text" name="category" class="form-control" /> -->
+
+
+          <label for="">Price</label>
+          <input type="text" name="Price" id="Price" class="form-control" required />
+
+           <label for="">Category</label>
+
+           <select class="form-select" name="category" id="cars" required>
+            <% availCategory.forEach(function(availCategory,index) { %>
+            <option value="<%= availCategory.CategoryName%>">
+              <%= availCategory.CategoryName%>
+            </option>
+            <% }) %>
+          </select>
+              
+
+
+
+          <!-- <select class="form-select" name="category" id="cars">
+            <option value="volvo">Volvo</option>
+          </select> -->
+          <!-- <label for="">Brand</label>
+          <select class="form-select" name="category" id="cars">
+            <option value="volvo">Volvo</option>
+          </select> -->
+
+          <label for="">Image</label>
+          <input type="file" name="Image" class="form-control" />
+
+          <button type="submit" class="btn btn-success mt-4">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function validate(){
+    console.log("testing");
+    const quantityInput = document.getElementById("quantity");
+  const quantity = quantityInput.value;
+  const nameInput=document.getElementById("name");
+  const name=nameInput.value;
+  const description=document.getElementById("description").value;
+  const price=document.getElementById("Price").value;
+
+
+    
+    
+  if (quantity < 0) {
+    alert("Quantity cannot be negative");
+    return false;
+  }
+  if (isNaN(quantity)) {
+    alert("Error: Quantity should be a number.");
+    return false;
+  }
+
+  if (!isNaN(name)) {
+    alert("Please enter a valid name!");
+    return false;
+  }
+  if (/[^a-zA-Z0-9]/.test(name)) {
+    alert("Error: name should not contain special characters.");
+    return false;
+  }
+
+  if (!isNaN(description)) {
+    alert("Please enter a valid discription!");
+    return false;
+  }
+  if (/[^a-zA-Z0-9]/.test(description)) {
+    alert("Error: description should not contain special characters.");
+    return false;
+  }
+
+  if (isNaN(quantity)) {
+    alert("Error: Price should be a number.");
+    return false;
+  }
+
+  if (price < 0) {
+    alert("price cannot be negative");
+    return false;
+  }
+
+
+  if (/[^a-zA-Z0-9]/.test(price)) {
+    alert("Error: price should not contain special characters.");
+    return false;
+  }
+ 
+
+
+
+
+  
+  return true;
+   }
+</script>

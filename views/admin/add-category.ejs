@@ -1,0 +1,104 @@
+<section class="">
+  <div class="container d-flex justify-content-center">
+    <div class="row w-75 mt-5">
+      <div class="col-md-12">
+        <h2 class="text-center">Add Category</h2>
+        <form
+          action="/admin/add-category"
+          method="POST"
+          onsubmit="return validate()"
+         
+        >
+          <label for="">Category Name</label>
+          <input type="text" name="category" id="category" class="form-control" required style="width: 7cm;" />
+          <button type="submit" class="btn btn-success mt-4"  >Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Table section -->
+<section w-50 mx-auto>
+  <div class="card-body">
+    <div class="row w-50 mt-5 mx-auto">
+      <div class="table-responsive">
+        <div class="table-responsive">
+          <table class="table align-middle table-nowrap mb-0" >
+            <thead class="table-light">
+              <tr>
+                <th class="align-middle" scope="col">No.</th>
+                <th class="align-middle" scope="col">Category Name</th>
+                <th class="align-middle" scope="col">Option</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <% viewCategory.forEach(function(viewCategory,index){ %>
+
+              <tr>
+                <td><%= index+1 %></td>
+
+                <td><%= viewCategory.CategoryName %></td>
+                <td>
+                   <a href="/admin/edit-category/<%= viewCategory._id %>" class="btn btn-xs btn-success"> Edit</a> 
+                  
+                  <a href="/admin/delete-category/<%= viewCategory._id %>" class="btn btn-xs btn-danger" onclick="return deleteAlert()"> Delete</a>
+
+                  <!-- <a href="/admin/delete_category/<%= viewCategory._id %>" class="btn btn-xs btn-danger"   onclick="return deleteAlert(), event.preventDefault()"> Delete</a> -->
+                  <!-- <a href="/admin/delete-category/<%= viewCategory._id %>" class="btn btn-xs btn-danger"   onclick="return deleteAlert(), event.preventDefault()"> Delete</a> -->
+                </td>
+              </tr>
+              <% })%>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- table-responsive end// -->
+    </div>
+  </div>
+</section>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+  <script>
+    function deleteAlert()
+   {
+  
+    swal({
+    title: "Are you sure?",
+    text: "Once deleted, you will not be able to recover this imaginary file!",
+    icon: "warning",
+    buttons: ["Cancel", "Delete"],
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      swal("Poof! Your imaginary file has been deleted!", {
+        icon: "success",
+      });
+    } else {
+      swal("Your imaginary file is safe!");
+    }
+  });
+    
+  } 
+  </script>
+
+<script>
+
+function validate() {
+  var categoryInput = document.getElementById("category").value;
+  if (!isNaN(categoryInput)) {
+    alert("Please enter a valid category!");
+    return false;
+  }
+  if (/[^a-zA-Z0-9]/.test(categoryInput)) {
+    alert("Error: Category name should not contain special characters.");
+    return false;
+  }
+
+ 
+  return true;
+}
+
+</script>

@@ -1,0 +1,160 @@
+<main class="main">
+  <section class="mt-50 mb-50">
+      <div class="container">
+          <div class="row">
+            
+              <div class="col-12">
+                  <div class="table-responsive">                   
+                      <table class="table shopping-summery text-center clean">
+                          <thead>
+                              <tr class="main-heading">
+                                  <th scope="col">Image</th>
+                                  <th scope="col">Name</th>
+                                  <th scope="col">Price</th>
+                                  <th scope="col">Quantity</th>
+                                  <th scope="col">Subtotal</th>
+                                  <th scope="col">Remove</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+
+                            <%   if(!productExist) { %>
+                      
+                              <h1>Your cart is empty</h1>
+                          <% } 
+
+                          else { %>
+                            <% products.forEach(function(product) { %>
+
+                              <tr>
+                                  <td class="image product-thumbnail"><img src="/uploads/<%=product.proDetails[0].Image%>" alt="#"></td>
+                                  <td class="product-des product-name">
+                                      <h5 class="product-name"><a href="#"><%=product.proDetails[0].Productname%></a></h5>
+                                      <p class="font-xs"><%=product.proDetails[0].ProductDescription%>
+                                      </p>
+                                  </td>
+                                  <td class="price" data-title="Price"><span><%=product.proDetails[0].Price%></span></td>
+                                  <td class="text-center" data-title="Stock">
+                                      <div class="detail-qty border radius  m-auto">
+                                        <% if (product.products.quantity > 1) { %>
+                                          <a class="qty-down" onclick="cartQuantity('<%= product._id %>','<%= product.proDetails[0]._id%>','<%= product.proDetails[0].Price %>',-1)">
+                                            <i class="fi-rs-angle-small-down"></i></a>  
+                                          <% } %>
+                                          <span id="qty<%= product.proDetails[0]._id%>"><%= product.products.quantity %></span>
+                                          <a  class="qty-up" onclick="cartQuantity('<%= product._id %>','<%= product.proDetails[0]._id%>','<%= product.proDetails[0].Price %>',1)">
+                                            <i class="fi-rs-angle-small-up"></i></a>
+                                          
+                                      </div>
+                                          
+                                      </div>
+                                  </td>
+                                  
+                                  <td class="text-right" data-title="Cart">
+                                    <span>₹ <span id="<%= product.proDetails[0]._id%>-subtotal">
+                                      <%=product.subtotal%></span></span>
+                                  </td>
+                                  
+                                
+                                  <td class="action" data-title="Remove">
+                                    <a href="/delete-cart-product/<%=product.proDetails[0]._id%>"
+                                      
+                                     class="text-muted"><i class="fi-rs-trash"></i></a></td>
+     
+                              </tr>
+                             
+
+                              
+                          <% }) %>
+                          <hr>  
+                          <% } %>
+                          </tbody>
+                      </table>
+                  </div>
+                              <div style="text-align: right; margin-left: 5cm;">
+                                  <div class="heading_s1 mb-3">
+                                    <h5 class="float-left mr-5"><span id="total"></span></h5><br>
+                                  </div>
+                                </div>
+                             
+
+                                <div style="text-align: right;">
+                                  <a href="/checkout" class="btn"> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                                </div>
+                                
+                                
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+</main>
+
+
+<script src="assets/js/vendor/modernizr-3.6.0.min.js"></script>
+<script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
+<script src="assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
+<script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/plugins/slick.js"></script>
+<script src="assets/js/plugins/jquery.syotimer.min.js"></script>
+<script src="assets/js/plugins/wow.js"></script>
+<script src="assets/js/plugins/jquery-ui.js"></script>
+<script src="assets/js/plugins/perfect-scrollbar.js"></script>
+<script src="assets/js/plugins/magnific-popup.js"></script>
+<script src="assets/js/plugins/select2.min.js"></script>
+<script src="assets/js/plugins/waypoints.js"></script>
+<script src="assets/js/plugins/counterup.js"></script>
+<script src="assets/js/plugins/jquery.countdown.min.js"></script>
+<script src="assets/js/plugins/images-loaded.js"></script>
+<script src="assets/js/plugins/isotope.js"></script>
+<script src="assets/js/plugins/scrollup.js"></script>
+<script src="assets/js/plugins/jquery.vticker-min.js"></script>
+<!-- Template  JS -->
+<script src="assets/js/main.js"></script>
+<script src="assets/js/shop.js"></script>
+</body>
+
+
+<script>
+  function cartQuantity(cartId,prodId,Price,count){
+    console.log(cartId,prodId,Price,count+'uuuuuuu');
+    let quantity=parseInt(document.getElementById('qty'+prodId).innerText)
+    const totalQuantity=count+quantity
+    const subTotal=(totalQuantity*Price)
+    console.log(subTotal)
+    document.getElementById(prodId+'-subtotal').innerHTML=subTotal
+
+    
+    $.ajax({
+      url:'/change-product-quantity',
+      data:{
+        cart:cartId,
+        product:prodId,
+        count:count,
+        quantity:quantity,
+        price:Price
+      },
+      method:'post',
+      success:(response,grandTotal)=>{
+
+        console.log(grandTotal,'llllllllllllllllkkk')
+        document.getElementById('total').innerHTML=grandTotal
+
+        if(response.stock=='Full'){
+          console.log('out of stock');
+        }
+        else if(response.removeProduct){
+          
+          alert('product removed ')
+          location.reload()
+        }else{
+          console.log(quantity+count);
+          document.getElementById('qty'+prodId).innerText=quantity+count
+        }
+        
+      }
+    })
+  }
+ </script> 

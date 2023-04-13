@@ -1,0 +1,117 @@
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<section class="">
+    <div class="container d-flex justify-content-center">
+      <div class="row w-75 mt-5">
+        <div class="col-md-12">
+          <h2 class="text-center">Product List</h2>
+          <form
+            
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Table section -->
+  <section  mx-auto>
+    <div class="card-body">
+      <div class="row mt-5 mx-auto">
+        <div class="table-responsive">
+          <div class="table-responsive">
+            <table class="table align-middle table-nowrap mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="align-middle" scope="col">No:</th>
+                  <th class="align-middle" scope="col">Image</th>
+                  <th class="align-middle" scope="col">product Name</th>
+                  <th class="align-middle" scope="col">Category</th>
+                  <th class="align-middle" scope="col">price</th>
+                  <!-- <th class="align-middle" scope="col">Category</th> -->
+                  <th class="align-middle" scope="col">Quantity</th>
+                 
+                  <th class="align-middle" scope="col">option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% response.forEach(function(response,index) { %>
+                <tr>
+                  <td><%=index+1 %> </td>
+                  <td><img src='/uploads/<%= response.Image %>' alt="" style="width:50px;height:50px";></td>
+                  <td>
+                    <p><%=response.Productname%></p>
+                    <small><%=response.ProductDescription%></small>
+
+                  </td> 
+                  <td><%=response.category%></td> 
+                  <td><%=response.Price%></td> 
+                  <!-- <td><%=response.category%></td>  -->
+                  <td><%=response.Quantity%></td> 
+                
+                  
+                  <td>
+                        <a href ="/admin/edit-product/<%=response._id %>"  class="btn btn-success">Edit</a>
+                        <button class="btn btn-danger text-white" data-value="<%=response._id %>" onclick="deleteProduct('<%=response._id %>')">Delete</button>
+                       
+                        <!-- <a href ="/admin/delete-product/<%=response._id %>" class="btn btn-danger"  onclick="return confirm('Are you want to delete <%=response.Productname%>?')">Delete</a> -->
+                  </td>
+    
+                 
+                </tr>
+          <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- table-responsive end// -->
+      </div>
+    </div>
+  </section>
+  
+  <script>
+
+
+
+
+
+
+const deleteProduct = (productId) =>{
+  swal({
+    title: "Are you sure?",
+    text: "Once deleted, you will not be able to recover this imaginary file!",
+    icon: "warning",
+    buttons: ["Cancel", "Delete"],
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      $.ajax({
+    url:'/admin/delete-product',
+    type:'post',
+    data:{productId},
+    success:(response)=>{
+      console.log(response)
+     
+      location.reload()
+    },
+    error:(err)=>{
+      console.log(err)
+    }
+  })
+    } else {
+      swal("Your imaginary file is safe!");
+    }
+  });
+  console.log(productId)
+}
+
+
+
+
+  </script>
+
