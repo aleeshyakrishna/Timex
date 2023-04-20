@@ -65,7 +65,19 @@ router.get('/edit-category/:id',authentication.adminAuth,adminControl.editTheCat
 
 router.post('/edit-category/:id',authentication.adminAuth,adminControl.postEditCategory)
 
-router.get('/orders-list',authentication.adminAuth,adminControl.ordersList)
+router.get('/orders-list',authentication.adminAuth,adminControl.getOrderList)
+
+router.get('/order-details',authentication.adminAuth,adminControl.getOrderDetails)
+
+router.post("/order-details", authentication.adminAuth, adminControl.postOrderDetails)
+
+router.get('/view-discount', authentication.adminAuth,adminControl.getDiscount)
+
+router.post('/addCoupon', authentication.adminAuth,adminControl.addNewCoupon)
+
+router.get('/sales-report',authentication.adminAuth,adminControl.getSalesreport)
+
+
 
 
 

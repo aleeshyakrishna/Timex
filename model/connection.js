@@ -102,19 +102,24 @@ const {ObjectID}=require('bson')
    
   
     })
-  
+
+
+//category
+
  const categorySchema= new mongoose.Schema({
     CategoryName:{
         type:String
     }
  })
 
+ //cart
 
 const cartSchema=new mongoose.Schema({
   userid:mongoose.SchemaTypes.ObjectId,
   products:[]
 })
 
+//address
 
 const addressSchema=new mongoose.Schema({
   name:{
@@ -151,6 +156,9 @@ const addressSchema=new mongoose.Schema({
    default: Date.now
   }
 })
+
+
+//order
 
 const orderSchema = new mongoose.Schema({
 
@@ -200,6 +208,94 @@ const orderSchema = new mongoose.Schema({
   }
 });
 
+//wishlist
+
+const wishlistSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  wishitems: [{
+    productId: { type: mongoose.Schema.Types.ObjectId },
+  }],
+  addedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// coupen
+
+// const couponSchema = new mongoose.Schema({
+//   couponName: String,
+//   expiry: {
+//     type: Date,
+//     default: new Date(),
+//   },
+//   minPurchase: Number,
+//   discountPercentage: Number,
+//   maxDiscountValue: Number,
+//   couponApplied: {
+//     type: String,
+//     default: false
+//   },
+//   isActive: {
+//     type: Boolean,
+//     default: false
+//   },
+//   description: String,
+//   createdAt: {
+//     type: Date,
+//     default: new Date(),
+//   },
+// });
+
+const couponSchema = new mongoose.Schema({
+  "couponName": "string", // The name of the coupon
+  "discount":"number",
+  "priceLimit": "number", // The minimum purchase amount required to use the coupon
+  "description": "string", // A description of the coupon
+  "expiry": "string", // The date the coupon expires in YYYY-MM-DD format
+})
+
+
+
+
+const userCoupon =new mongoose.Schema({
+  couponId:{
+    type:mongoose.Schema.Types.ObjectId
+  } ,
+  userId:{
+    type:String
+  } ,
+  couponCode:{
+    type:String
+  },
+
+  discount:{
+    type:Number
+  },
+
+  used:{
+    type:Boolean
+  },
+  code:{
+    type:String
+  },
+  createDate :{
+    type:String,
+    
+  }, 
+  exp:{
+    type:String
+    
+  }
+  
+})
+
+
+
+
+
  module.exports={
     user : mongoose.model('user',userschema),
     category : mongoose.model('category',categorySchema),
@@ -207,4 +303,7 @@ const orderSchema = new mongoose.Schema({
     cart : mongoose.model('cart',cartSchema),
     address : mongoose.model('address',addressSchema),
     order:mongoose.model('order',orderSchema),
+    wishlist:mongoose.model('wishlist',wishlistSchema),
+    coupon:mongoose.model('coupon',couponSchema),
+    userCoupon:mongoose.model('userCoupon',userCoupon)
  }

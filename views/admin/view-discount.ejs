@@ -1,0 +1,127 @@
+<div class="container-fluid">
+    <section class="content-main container w-100">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title card-title">Discount</h2>
+        </div>
+        <a href="" class="btn btn-success ml-auto mt-3 " style="height: 40px; width: 120px" data-toggle="modal"
+                    data-target="#exampleModalCenter">Add
+                    Coupon</a>
+
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="table-responsive">
+
+            
+            <table class="table table-hover">
+            <!-- if -->
+              <!-- <div class="d-flex justify-content-center">
+                <img src="/assets/imgs/banners/empty-cart-1546860808" alt="" />
+              </div> -->
+             <!-- else -->
+              <thead>
+                <tr>
+                  <th>sl no</th>
+                  <th scope="col">couponName</th>
+                  <th scope="col">Discount</th>
+                  <th scope="col">Price Limit</th>
+                  
+                  <th scope="col">DISCRIPTION</th>
+                  <th scope="col">expiryDate</th>
+                  <th scope="col" class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- for loop -->
+                <% response.forEach(function(data,index){ %>
+                <tr>
+                  <td><%= index+1 %></td>
+                  <td><b><%=data.couponName%></b></td>
+                  <td><%=data.discount%></td>
+                  <td><%=data.priceLimit%></td>
+                  <td><%=data.description%></td>
+                  <td><%=data.expiry%></td>
+
+                  <td>
+                    <!-- <span class="badge rounded-pill alert-warning"
+                      >
+                    </span> -->
+                  </td>
+                  
+                  <td class="text-end">
+                    <a
+                    href=""
+                      class="btn btn-md rounded font-sm"
+                      >Detail</a
+                    >
+                  </td>
+                 
+                </tr>
+                <% })%> 
+              </tbody>
+            </table>
+    
+          </div>
+          <!-- table-responsive //end -->
+        </div>
+        <!-- card-body end// -->
+      </div>
+      <!-- card end// -->
+    </section>
+    <!-- content-main end// -->
+  </div>
+
+  <!-- Modal -->
+<form action="/admin/addCoupon" method="post">
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Add Coupon</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form action="/admin/addCoupon" method="post">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Code</label>
+                    <input type="text" class="form-control" id="code" aria-describedby="emailHelp"
+                        placeholder="Enter code" name="code" required />
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Discount</label>
+                    <input type="text" class="form-control" id="discount" placeholder="Enter Discount"
+                        name="discount" required />
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">price limit</label>
+                    <input type="text" class="form-control" id="priceLimit" placeholder="Enter Discount"
+                        name="priceLimit" required />
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Description</label>
+                    <input type="text" class="form-control" id="description" placeholder="Enter Description"
+                    name="description" required />
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Expiry Date</label>
+                    <input type="date" class="form-control" id="date" placeholder="Enter Description" name="date"
+                        required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+</form>
+
+<!-- Modal -->

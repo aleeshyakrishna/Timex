@@ -16,9 +16,11 @@ router.route('/signup')
     .get(controller.showSignup)
     .post(controller.postSignup)
 
-router.get('/shop',authentication.userAuth,controller.shopView)
+// router.get('/generateCoupon',controller.generateCoupon)
 
-router.get('/shop-product',authentication.userAuth,controller.productView)
+router.get('/shop',controller.shopView)
+
+router.get('/shop-product',controller.productView)
 
 router.get('/logout',controller.userlogout)
 
@@ -26,19 +28,27 @@ router.get('/otplogin',controller.showotp)
 
 router.post('/sendOtp',controller.postotp)
 
-router.get('/zoomView/:id',authentication.userAuth,controller.zoomshopView)
+router.get('/zoomView/:id',controller.zoomshopView)
 
-router.get('/add-to-cart/:id',authentication.userAuth,controller.addToCart)
+router.get('/add-to-cart/:id',controller.addToCart)
 
 router.get('/cart',authentication.userAuth,controller.getCartProducts)
 
-router.get('/delete-cart-product/:id',authentication.userAuth,controller.deleteCartProduct)
+router.get('/delete-cart-product/:id',authentication.userAuth,controller. deleteCartProduct)
+
+router.get('/wishlist/:id',authentication.userAuth,controller.getWishlist)
+
+router.get('/view-wishlist',authentication.userAuth,controller.viewWishList)
+
+// router.get('/get-Wishlist-products',authentication.userAuth,controller.getWishlistProducts)
 
 router.post('/change-product-quantity',authentication.userAuth,controller.changeQuantity) 
 
 router.get('/checkout',authentication.userAuth,controller.placeOrder)
 
-router.post('/checkout',authentication.userAuth,controller.postAddress)
+router.post('/checkout',authentication.userAuth,controller.postPlaceOrder)
+
+router.post('/verify-payment',authentication.userAuth,controller.VerifyOrder)
 
 // router.post('/order-place',(req,res)=>{
 //     console.log(req.body,"(((((((((((((((((((");
@@ -50,6 +60,12 @@ router.get('/order-success',authentication.userAuth,controller.getOrder)
 
 router.get('/orders',authentication.userAuth,controller.viewOrder)
 
+router.get('/coupens',authentication.userAuth,controller.viewCoupen)
+
+//here
+
+router.post('/get-coupon',authentication.userAuth,controller.applyCoupon)
+
 router.get('/profile',authentication.userAuth,controller.getProfile)
 
 router.post('/address',authentication.userAuth,controller.saveAddress)
@@ -57,6 +73,8 @@ router.post('/address',authentication.userAuth,controller.saveAddress)
 router.get('/view-order-products/:id',authentication.userAuth,controller.orderProducts)
 
 router.post('/order-cancel/:id',authentication.userAuth,controller.cancelOrder)
+
+
 
 
 

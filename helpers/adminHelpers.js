@@ -179,6 +179,137 @@ module.exports={
        })
     },
 
+    orderPage: () => {
+        return new Promise(async (resolve, reject) => {
+    
+          await db.order.aggregate([
+
+
+            [
+                {
+                  $unwind: {
+                    path:'$products', 
+                    includeArrayIndex: 'string'
+                  }
+                }, {
+                  $project: {
+                    _id:1,
+                    deliveryDetails: 1, 
+                    userId: 1, 
+                    paymentMethod: 1, 
+                    products: 1, 
+                    status: 1, 
+                    totalAmount: 1, 
+                    date: 1
+                  }
+                }
+              ]
+            // {
+            //   $unwind: '$orders'
+            // },
+            // {
+            //   $sort: { 'orders: createdAt': -1 }
+            // }
+          ]).then((response) => {
+            console.log(response,"this is response of admin order list");
+            resolve(response)
+    
+          })
+        })
+    
+      },
+
+      orderDetails: (orderId) => {
+        console.log(orderId,"------------------------");
+        return new Promise(async (resolve, reject) => {
+    
+          let order = await db.order.findOne({ _id: orderId })
+          
+          console.log(order + '----------------------------------------------------------------');
+          resolve(order)
+        })
+    
+      },
+//jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
+      changeOrderStatus: (orderId, data) => {
+        console.log(orderId,data,">>>>>>>>>>>>>>>>>>>>>>>");
+        return new Promise(async (resolve, reject) => {
+        //   let orders = await db.order.findOne({ _id: orderId }, { 'orders.$': 1 })
+    
+          let users = await db.order.findOneAndUpdate(
+            { _id: orderId },
+            {
+              $set: {
+                status: data,
+    
+              }
+            },
+            {new:true}
+          )
+          console.log("status updated successfully.........");
+          resolve(response)
+        })
+    
+      },
+
+      addNewCoupon:(data)=>{
+
+        return new Promise(async(resolve,reject)=>{
+            Newdata = new db.coupon({
+             couponName: data.code,
+             discount:data.discount,
+             priceLimit: data.priceLimit,
+             description: data.description,
+             expiry: data.date,
+             })
+    
+            await Newdata.save().then((Newdata)=>{
+          console.log(Newdata,"iiiiiiiiiiiiiiiiiiiiii");
+    
+          
+                 resolve(Newdata)
+             })
+          
+         })
+      },
+
+      getSalesData:(req,res)=>{
+        return new Promise(async(resolve,reject)=>{
+         let salesData= await  db.order.aggregate([
+                    {
+                      $match: {
+                        status: 'Delivered'
+                      }
+                    }, {
+                      $lookup: {
+                        from: 'users', 
+                        localField: 'userId', 
+                        foreignField: '_id', 
+                        as: 'result'
+                      }
+                    }, {
+                      $unwind: {
+                        path: '$result', 
+                        includeArrayIndex: 'string'
+                      }
+                    }, {
+                      $project: {
+                        deliveryDetails: 0, 
+                        products: 0
+                      }
+                    }
+                  ]).then((response)=>{
+                    
+                        
+                        resolve(response)
+                
+                     
+                  })
+          
+            
+        })
+      }
+
     
 
     

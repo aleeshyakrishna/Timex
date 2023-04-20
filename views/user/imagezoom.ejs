@@ -100,14 +100,29 @@
                                                 <span class="qty-val">1</span>
                                                 <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                             </div> -->
+                                            <% if(!locals.userName){%>
                                                 <div class="product-extra-link2">
-                                                    <button type="submit" onclick="addToCart('<%= response._id %>')"
-                                                        class="button button-add-to-cart">Add to cart</button>
+                                                    
+                                                    <a type="button" href="/login"
+                                                    aria-label="Add To Cart"  class="action-btn hover-up "  style="width: 3cm; background-color: black; color: white;">Add to cart</a>
                                                     <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                        href="/login"><i class="fi-rs-heart"></i></a>
                                                     <a aria-label="Compare" class="action-btn hover-up"
                                                         href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                                 </div>
+                                                <%}else{%>
+                                                    <div class="product-extra-link2">
+                                                    
+                                                        <a style="background-color: black; color: white;" type="submit" onclick="addToCart('<%= response._id %>')"
+                                                            class="button button-add-to-cart">Add to cart</a>
+                                                        <a  class="action-btn hover-up" type="submit" onclick="addToWish('<%= response._id %>')"
+                                                            ><i class="fi-rs-heart"></i></a>
+                                                        <a aria-label="Compare" class="action-btn hover-up"
+                                                            href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                    </div>
+                                                    <%}
+                                            %>
+                                                
                                             </div>
 
                                         </div>
@@ -128,16 +143,47 @@
         function addToCart(proId) {
             // console.log("api vall");
             console.log(proId);
+            
             $.ajax ({
                 url: `/add-to-cart/${proId}`,
                 method: 'get',
                 success: (response) => {
                     // console.log(response);
                     if(response.status) {
-                        // alert(response)
+                        // alert("wowww")
                         // location.reload();
                         Toastify({
                             text: "ADDED TO YOUR CART",
+                            duration: 3000,
+                            gravity: "bottom",
+                            position: "center",
+                            style: {
+                                background: "linear-gradient(to right, #00b09b, #96c93d)",
+                            }
+                            }).showToast();
+                           
+                    }
+                }
+            })
+        }
+
+
+
+        function addToWish(proId) {
+            // console.log("api vall");
+            console.log(proId,"llllll");
+            
+            $.ajax ({
+                url: `/wishlist/${proId}`,
+                method: 'get',
+                success: (response) => {
+                   
+                    console.log(response);
+                    if(response.status) {
+                        // alert("wowww")
+                        // location.reload();
+                        Toastify({
+                            text: "ADDED TO YOUR WISHLIST",
                             duration: 3000,
                             gravity: "bottom",
                             position: "center",

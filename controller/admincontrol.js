@@ -203,7 +203,7 @@ module.exports={
       })
     },
 
-    ordersList:(req,res)=>{
+    
       
 
         
@@ -211,23 +211,100 @@ module.exports={
     //       // console.log(response, "this is new response..........");
     //       res.render("user/orders", { loginheader: true, response,userName:user });
     //     });
+    getOrderList: (req, res) => {
+
+
+      adminHelper.orderPage().then((response) => {
+        const getDate = (date) => {
+          let orderDate = new Date(date);
+          let day = orderDate.getDate();
+          let month = orderDate.getMonth() + 1;
+          let year = orderDate.getFullYear();
+          let hours = date.getHours();
+          let minutes = date.getMinutes();
+          let seconds = date.getSeconds();
+          return `${isNaN(day) ? "00" : day}-${isNaN(month) ? "00" : month}-${isNaN(year) ? "0000" : year
+            } ${date.getHours(hours)}:${date.getMinutes(minutes)}:${date.getSeconds(seconds)}`;
+        };
+  
+        // res.render('admin/order-list', { layout: 'adminLayout', adminStatus, response, getDate })
+        res.render('admin/orders-list',{layout:"adminLayout",adminStatus,response,getDate})
+      })
+    },
+
+    getOrderDetails: (req, res) => {
+      console.log(req.query.orderid,"this is orderId");
+      adminHelper.orderDetails(req.query.orderid).then((order) => {
+        console.log(order, 'orderrrrrrrrrrrrrrrrrrrr');
+        const getDate = (date) => {
+          let orderDate = new Date(date);
+          let day = orderDate.getDate();
+          let month = orderDate.getMonth() + 1;
+          let year = orderDate.getFullYear();
+          let hours = date.getHours();
+          let minutes = date.getMinutes();
+          let seconds = date.getSeconds();
+          return `${isNaN(day) ? "00" : day}-${isNaN(month) ? "00" : month}-${isNaN(year) ? "0000" : year
+            } ${date.getHours(hours)}:${date.getMinutes(minutes)}:${date.getSeconds(seconds)}`;
+        };
+  
+        let products = order.products
+        console.log(products,"jjjjjjjjjjjjjjjjj");
+        let total = order.totalAmount
+        res.render('admin/order-details', { layout: 'adminLayout', adminStatus, order, total,products,  getDate })
+      
+      })
+  
+    },
+
+    postOrderDetails: (req, res) => {
+      console.log(req.query.orderId,"this is postorder details orderid");
+      console.log(req.body,"this is req.body in post order details");
+      adminHelper.changeOrderStatus(req.query.orderId, req.body.status).then((response) => {
+        res.redirect('/admin/orders-list')
+      })
+  
+    },
+
+    getDiscount:(req,res)=>{
+      
+      return new Promise(async(resolve,reject)=>{
+        await db.coupon.find().exec().then((response)=>{
+            resolve(response)
+            console.log(response,"jjjjjjjjjjjjjjjjj");
+            // console.log("hiiiiiiyiiiiiiiiiii");
+            res.render('admin/view-discount',{layout:'adminLayout',adminStatus:true,response})
+          })
+    })
+
+     
+    },
+
+    addNewCoupon: (req,res)=>{
+      // console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+     
+      let data=req.body;
+     adminHelper.addNewCoupon(data).then(()=>{
+      res.redirect('/admin/view-discount')
+     })
+
     
-      res.render('admin/orders-list',{layout:"adminLayout",adminStatus})
-    }
+  },
+
+  getSalesreport:(req,res)=>{
+    //date,orderid,username,priceTotal,payment method
+    adminHelper.getSalesData().then((response)=>{
+      console.log(response,"the sales reportttttttttttttttttttttttttt");
+      res.render('admin/sales-report',{layout:'adminLayout',adminStatus:true,response})
+    })
+    
+  }
 
 
 
-
-   
-
-
-
-
-
-
-
-
-
+    
+      
+  
 }
 
 

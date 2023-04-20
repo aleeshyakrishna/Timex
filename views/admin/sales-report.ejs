@@ -1,0 +1,83 @@
+<div class="container-fluid">
+    <section class="content-main container w-100">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title card-title">SALES REPORT</h2>
+        </div>
+        <a href="" class="btn btn-success ml-auto mt-3 " style="height: 40px; width: 120px" data-toggle="modal"
+        data-target="#exampleModalCenter">Dowload report</a>
+       
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="table-responsive">
+
+            
+            <table class="table table-hover">
+            <!-- if -->
+              <!-- <div class="d-flex justify-content-center">
+                <img src="/assets/imgs/banners/empty-cart-1546860808" alt="" />
+              </div> -->
+             <!-- else -->
+              <thead>
+                <tr>
+                  <th>sl no</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">OrderId</th>
+                  <th scope="col">UserName</th>
+                  <th scope="col">Price</th>
+                  
+                  <th scope="col">Payment Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- for loop -->
+                <% response.forEach(function(data,index){ %>
+                
+                <tr>
+                  <td><%= index+1 %></td>
+                  <td><%= data.date %></td>
+                  <td><b><%= data._id%></b></td>
+                  <td><%= data.result.username%></td>
+                  <td><%=data.totalAmount%></td>
+                  <td><%=data.paymentMethod%></td>
+                  <td></td>
+
+                  <td>
+                    <!-- <span class="badge rounded-pill alert-warning"
+                      >
+                    </span> -->
+                  </td>
+                  
+                  <!-- <td class="text-end">
+                    <a
+                    href=""
+                      class="btn btn-md rounded font-sm"
+                      >Detail</a
+                    >
+                  </td> -->
+                 
+                </tr>
+                <% })%> 
+             <!-- loop close  -->
+              </tbody>
+            </table>
+    
+          </div>
+          <!-- table-responsive //end -->
+        </div>
+        <!-- card-body end// -->
+      </div>
+      <!-- card end// -->
+    </section>
+    <!-- content-main end// -->
+  </div>
+
+  <script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
+
+<!-- Modal -->

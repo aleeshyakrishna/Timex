@@ -18,15 +18,16 @@
                   class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5"
                 >
                   <div class="padding_eight_all bg-white">
+                    
                     <div class="heading_s1">
-                      <h3 class="mb-30">Login</h3>
+                      <h5 class="mb-30">REGISTERED CUSTOMERS</h5>
                     </div>
                     <%if (locals.blockedStatus){%>
-                      <p style="color: red;">You are blocked by admin </p>
+                      <p style="color: red;">SORRY,YOU ARE BLOCKED! </p>
                       <%}%>
 
                       <%if(locals.loginStatus==false){%>
-                        <p style="color: red;">Invalid Credentials </p>
+                        <p style="color: red;">INVALID PASSWORD OR EMAIL </p>
                         <%}%>
                       
 
@@ -86,7 +87,7 @@
                         </button>
                       
                       </div>
-                     
+                 
                       <div class="form" style="background-color:#050606; ">
 
                         <a href="/otplogin" class="btn btn-fill-out btn-block hover-up" style="width: 100%; color: white; ">login with OTP</a>

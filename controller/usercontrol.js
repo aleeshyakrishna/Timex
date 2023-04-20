@@ -7,7 +7,7 @@ var loginheader, loginStatus;
 module.exports = {
   getHome: async (req, res) => {
     let userId;
-    if (req.session.user) {
+    if (req.session.userIn) {
 
       console.log(req.session.user, "kkkkkoiiiiiii");
       userId = req.session.user._id;
@@ -65,31 +65,67 @@ module.exports = {
     });
   },
   zoomshopView: (req, res) => {
-    let user=req.session.user.username;
+
+    if(req.session.userIn){
+      let user=req.session.user.username;
     userhelpers.zoomlistProductShop(req.params.id).then((response) => {
-      console.log(response);
+      console.log(response,"///////////mmmmmmmmmmm////////mmmmmmmmm");
       res.render("user/imagezoom", { response, loginheader: true ,userName:user});
     });
+    }else{
+    
+    userhelpers.zoomlistProductShop(req.params.id).then((response) => {
+     
+      res.render("user/imagezoom", { response, loginheader: false});
+    });
+    }
+    
   },
 
   shopView: (req, res) => {
-    userId = req.session.user._id;
-    let user=req.session.user.username;
-    userhelpers.listProductShop().then((response) => {
-      adminhelpers.findAllcategories().then(async (cat) => {
-        // cartCount=req.session.cartCount
-        let cartCount = await userhelpers.getCartCount(userId);
-        console.log(cartCount + "[[[[[[[[[[=====");
+    if (req.session.userIn){
+      
+      var user=req.session.user.username;
+      var userId = req.session.userIn._id;
+   
 
-        res.render("user/shop", {
-          response,
-          cat,
-          loginheader: true,
-          cartCount,
-          userName:user
+      userhelpers.listProductShop().then((response) => {
+        adminhelpers.findAllcategories().then(async (cat) => {
+          // cartCount=req.session.cartCount
+          let cartCount = await userhelpers.getCartCount(userId);
+          console.log(cartCount + "[[[[[[[[[[=====");
+  
+          res.render("user/shop", {
+            response,
+            cat,
+            loginheader: true,
+            cartCount,
+            userName:user
+          });
         });
       });
-    });
+    }
+    else{
+      userhelpers.listProductShop().then((response) => {
+        adminhelpers.findAllcategories().then(async (cat) => {
+          // cartCount=req.session.cartCount
+          // let cartCount = await userhelpers.getCartCount(userId);
+          // console.log(cartCount + "[[[[[[[[[[=====");
+  
+          res.render("user/shop", {
+            response,
+            cat,
+            loginheader: false,
+            
+            
+          });
+        });
+      });
+    }
+    
+    
+    
+   
   },
 
   productView: (req, res) => {
@@ -108,11 +144,21 @@ module.exports = {
       console.log(response);
       var emailStatus = response.status;
       if (emailStatus) {
+        //generate coupen
+        // res.redirect('/generateCoupon')
         res.redirect("/login");
       } else {
         res.render("user/signup", { emailStatus, });
       }
     });
+  },
+
+  generateCoupon:(req,res)=>{
+   
+      userhelpers.generateNewCoupon().then((response) => {
+        res.json(response);
+      });
+   
   },
 
   userlogout: (req, res) => {
@@ -143,15 +189,21 @@ module.exports = {
 
   //add-to-cart
   addToCart: (req, res) => {
-    const userId = req.session.user._id;
-    console.log(userId, "qwertyuiopsadfghjklzxcvbn");
-    const proId = req.params.id;
-    //console.log(proId,'llllllllll')
-    userhelpers.addToCarts(proId, userId).then(() => {
-      res.json({
-        status: "success",
+    if(req.session.userIn){
+      const userId = req.session.user._id;
+      console.log(userId, "this is useriddddddddddddddddd");
+      const proId = req.params.id;
+      //console.log(proId,'llllllllll')
+      userhelpers.addToCarts(proId, userId).then(() => {
+        res.json({
+          status: "success",
+        });
       });
-    });
+    }else{
+      console.log("nnnnnnnnnnnnoooooooooo");
+      res.render('user/login',{loginheader:false})
+    }
+    
   },
 
   getCartProducts: (req, res) => {
@@ -161,17 +213,13 @@ module.exports = {
     if (req.session.user) {
       userId = req.session.user._id;
     }
-    console.log(userId + "hloooooooooooooooooooooooooooooooooooooooooooooooo");
     userhelpers.displayProducts(userId).then(async (products) => {
-      console.log("uuuuuuuuuuuu", products.proDetails);
       let cartCount = await userhelpers.getCartCount(userId);
       console.log(cartCount, "======");
       if (cartCount) {
         res.render("user/cart", {
-          productExist: true,
-          products,
-          cartCount,
-          loginheader: true,
+          productExist: true,products,
+          cartCount,loginheader: true,
           userName:user
         });
       } else {
@@ -179,6 +227,56 @@ module.exports = {
       }
     });
   },
+
+ 
+    
+getWishlist: async (req, res) => {
+  if(req.session.userIn){
+    console.log("hi this is productId");
+    console.log(req.params.id,"<<<<.....wishlistid......>");
+    console.log(req.session.user._id,"<<<<<.......userId......>>>>");
+
+    // userhelpers.addToCarts(proId, userId).then(() => {
+    //   res.json({
+    //     status: "success",
+    //   });
+    // });
+
+  userhelpers
+          .addToWishList(req.params.id, req.session.user._id)
+          .then(() => {
+            res.json({
+              status: "success",
+            });
+          });
+  }
+
+ 
+    },
+
+    viewWishList:async(req,res)=>{
+     
+        wishcount = await userhelpers.getWishCount(req.session.user._id)
+        console.log(wishcount,"this is count of wishlist");
+      let user=req.session.user.username;
+        await userhelpers
+          .ListWishList(req.session.user._id)
+          .then((wishlistItems) => {
+            console.log(wishlistItems);
+    
+            res.render("user/view-wishlist", {
+              wishlistItems,
+              wishcount,
+              userName:user,
+             loginheader:true,
+             
+            });
+          });
+     
+    },
+ 
+    
+  
 
   deleteCartProduct: (req, res) => {
     userhelpers
@@ -190,6 +288,8 @@ module.exports = {
         res.redirect("/cart");
       });
   },
+
+  
 
   changeQuantity: async (req, res) => {
     if (req.session.user) {
@@ -236,15 +336,22 @@ module.exports = {
 
       const userDetails=await userhelpers.getUser(userId)
 
+      const coupens=await userhelpers.validCoupens(req.session.user._id)
+
+      let products=await userhelpers.displayProducts(userId)
+     
+
       console.log('iikkkkkkkkkkkkkkuuuu',userDetails.address);
       //   value = total[0].totalRevenue;
       res.render("user/checkout", {
         value,
+        products,
         loginheader: true,
         cartCount,
         user: userId,
         userName:user,
-        address:userDetails.address
+        address:userDetails.address,
+        coupons:coupens
       });
     });
   },
@@ -260,20 +367,25 @@ module.exports = {
   
   //           },
 
-  postAddress: async (req, res) => {
+  postPlaceOrder: async (req, res) => {
     console.log(req.body, "this is req.body");
     if (req.session.user) {
       userId = req.session.user._id;
     }
     let carts = await userhelpers.getCartProductList(req.session.user._id);
     let total = await userhelpers.getTotalAmount(userId);
-        let value = total[0].totalRevenue
+    // userhelpers.coupenCheck()
+              
+    let value = total[0].totalRevenue
     userhelpers
       .placeOrder(req.body, carts, value, req.session.user._id)
       .then((orderID) => {
         if (req.body["paymentMethod"] == "COD") {
           res.json({ codstatus: true });
         } else {
+          userhelpers.generateRazorpay(orderID,value).then((response)=>{
+              res.json(response)
+          })
         }
       });
 
@@ -299,20 +411,40 @@ module.exports = {
     // });
   },
 
+  VerifyOrder:(req,res)=>{
+   
+      console.log(req.body,":::;;;::::;;;;::::;;;;:::;;;::;;;:::::;;;;::");
+
+      res.redirect('/user/order-success');
+      // res.json({
+      //   status: true
+      // })
+  },
+
   saveAddress:(req,res)=>{
     // console.log(req.body,"............>>>...........");
       const id="id"+Math.random().toString(16).slice(2);
-      userhelpers.saveaddress(req.session.user.email,req.body,id).then(
+      userhelpers.saveaddress(req.session.user.email,req.body,id).then(()=>{
         res.redirect('/checkout')
-        )
+      })
+       
+        
   },
-
-  getOrder: (req, res) => {
+//coupeeeeeeeeeeeeeeeeen
+   getOrder: (req, res) => {
     // console.log("llllllllllll");
+
     let userId = req.session.user._id;
     let user=req.session.user.username;
+    let count=userhelpers.countCoupon(userId)
+    
+
+        
+      res.render("user/order-success", { loginheader: true, user: userId,userName:user });
+    
+    
     // const cartCount = await userhelpers.getCartCount(userId);
-    res.render("user/order-success", { loginheader: true, user: userId,userName:user });
+    
   },
 
   //   viewOrder:(req,res)=>{
@@ -331,6 +463,41 @@ module.exports = {
       console.log(response, "this is new response...............");
       res.render("user/orders", { loginheader: true, response,userName:user });
     });
+  },
+
+  viewCoupen:(req,res)=>{
+    userId=req.session.user._id;
+    userName=req.session.user.username;
+    let now = Date.now()
+    let response={success:false}
+    let expiry={success:false}
+    userhelpers.getUsercoupen(userId).then((coupenList)=>{
+      if(coupenList.used=false){
+
+         response.success=true
+      }
+      if(now<coupenList.exp){
+
+        expiry.success=true
+      }
+    
+      
+      res.render('user/view-coupens',{coupenList,loginheader:true,userName:userName,response,expiry})
+    })
+     
+  },
+
+  //here
+
+  applyCoupon:async(req,res)=>{
+    let userId=req.session.user._id
+    let coupenCode=req.body.couponCode
+    let total = await userhelpers.getTotalAmount(userId)
+
+    const response = await  userhelpers.coupenValidate(userId,coupenCode,total)
+    response
+    ?res.status(200).json(response)
+    :res.status(403).json(response)
   },
 
   getProfile:(req,res)=>{

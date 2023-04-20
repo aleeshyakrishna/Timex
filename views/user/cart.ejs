@@ -122,7 +122,7 @@
     console.log(cartId,prodId,Price,count+'uuuuuuu');
     let quantity=parseInt(document.getElementById('qty'+prodId).innerText)
     const totalQuantity=count+quantity
-    const subTotal=(totalQuantity*Price)
+    const subTotal=parseInt(totalQuantity*Price)
     console.log(subTotal)
     document.getElementById(prodId+'-subtotal').innerHTML=subTotal
 

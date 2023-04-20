@@ -147,9 +147,18 @@
                   <li>
                     <a href="/shop">Shop <i class=""></i></a>
                   </li>
-                  <li class="position-static">
-                    <a href="/orders">Orders <i class=""></i></a>
-                  </li>
+                  <% if(locals.loginheader){%>
+                    <li class="position-static">
+                      <a href="/orders">Orders <i class=""></i></a>
+                    </li>
+
+                    <li class="position-static">
+                      <a href="/coupens">Coupons <i class=""></i></a>
+                    </li>
+                    <%}
+                  
+                  %>
+                  
                   <!-- <li>
                     <a href="blog-category-grid.html">About <i class=""></i></a>
                   </li> -->
@@ -190,19 +199,21 @@
                 </select>
                 <input type="text" placeholder="Search for items..." />
               </form>-->
+
             </div> 
             <div class="header-action-right">
               <div class="header-action-2">
-                <!-- <div class="header-action-icon-2">
-                  <a href="shop-wishlist.html">
+                <div class="header-action-icon-2">
+                  <a href="/view-wishlist">
                     <img
                       class="svgInject"
                       alt="Evara"
                       src="assets/imgs/theme/icons/icon-heart.svg"
                     />
-                    <span class="pro-count blue">4</span>
+                    <span class="pro-count blue"><%= locals.wishcount%></span>
                   </a>
-                </div> -->
+                </div>
+
                 <div class="header-action-icon-2">
                   <a class="mini-cart-icon" href="/cart">
                     <img
