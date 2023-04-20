@@ -60,7 +60,6 @@ router.post('/delete-product',adminControl.deleteTheProduct)
 
 router.get("/delete-category/:id",authentication.adminAuth,adminControl.deleteCategory)
 
-
 router.get('/edit-category/:id',authentication.adminAuth,adminControl.editTheCategory)
 
 router.post('/edit-category/:id',authentication.adminAuth,adminControl.postEditCategory)

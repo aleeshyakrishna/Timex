@@ -295,6 +295,8 @@ module.exports={
     //date,orderid,username,priceTotal,payment method
     adminHelper.getSalesData().then((response)=>{
       console.log(response,"the sales reportttttttttttttttttttttttttt");
+      // let username=response[0].user[0].username;
+      console.log(response[0].result.username,"qqqqqqqqqqqqqqqqqqqqqqqq");
       res.render('admin/sales-report',{layout:'adminLayout',adminStatus:true,response})
     })
     

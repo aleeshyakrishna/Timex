@@ -1,5 +1,6 @@
 const { response } = require('express')
 const db= require('../model/connection')
+const { ObjectId } = require('mongodb')
 
 
 
@@ -275,33 +276,38 @@ module.exports={
 
       getSalesData:(req,res)=>{
         return new Promise(async(resolve,reject)=>{
-         let salesData= await  db.order.aggregate([
+          await  db.order.aggregate([
                     {
                       $match: {
                         status: 'Delivered'
                       }
-                    }, {
-                      $lookup: {
-                        from: 'users', 
-                        localField: 'userId', 
-                        foreignField: '_id', 
-                        as: 'result'
-                      }
-                    }, {
-                      $unwind: {
-                        path: '$result', 
-                        includeArrayIndex: 'string'
-                      }
-                    }, {
-                      $project: {
-                        deliveryDetails: 0, 
-                        products: 0
-                      }
-                    }
+                    },
+                   
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "userId",
+                            foreignField: "_id",
+                            as: "result"
+                          }
+                      },
+                     {
+                       $unwind: {
+                            path: "$result",
+                            includeArrayIndex: 'string'
+                                }
+                     },
+                    // {
+                    //   $project: {
+                    //     deliveryDetails: 0, 
+                    //     products: 0
+                    //   }
+                    // }
                   ]).then((response)=>{
                     
-                        
+                        console.log(response,"iiiiiiiiiiiiiiiiii");
                         resolve(response)
+                       
                 
                      
                   })
