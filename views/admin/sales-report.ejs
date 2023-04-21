@@ -4,13 +4,12 @@
         <div>
           <h2 class="content-title card-title">SALES REPORT</h2>
         </div>
-        <a href="" class="btn btn-success ml-auto mt-3 " style="height: 40px; width: 120px" data-toggle="modal"
-        data-target="#exampleModalCenter">Dowload report</a>
+        <button  id="download" class=" mt-15 btn btn-suucess bg-dark" >Download sales report</button>
        
       </div>
       
       <div class="card mb-4">
-        <div class="card-body">
+        <div id="container_content" class="card-body">
           <div class="table-responsive">
 
             
@@ -73,8 +72,19 @@
     </section>
     <!-- content-main end// -->
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <script>
+
+window.onload=function(){
+    document.getElementById('download').addEventListener("click",()=>{
+         let invoice= this. document.getElementById('container_content')
+         console.log(invoice);
+         console.log(window);
+         html2pdf().from(invoice).save()
+    })
+}
+
     $(document).ready(function () {
         $('#example').DataTable();
     });

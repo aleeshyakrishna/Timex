@@ -36,10 +36,10 @@
                                   <td class="price" data-title="Price"><span><%=product.proDetails[0].Price%></span></td>
                                   <td class="text-center" data-title="Stock">
                                       <div class="detail-qty border radius  m-auto">
-                                        <% if (product.products.quantity > 1) { %>
+                                      
                                           <a class="qty-down" onclick="cartQuantity('<%= product._id %>','<%= product.proDetails[0]._id%>','<%= product.proDetails[0].Price %>',-1)">
                                             <i class="fi-rs-angle-small-down"></i></a>  
-                                          <% } %>
+                                        
                                           <span id="qty<%= product.proDetails[0]._id%>"><%= product.products.quantity %></span>
                                           <a  class="qty-up" onclick="cartQuantity('<%= product._id %>','<%= product.proDetails[0]._id%>','<%= product.proDetails[0].Price %>',1)">
                                             <i class="fi-rs-angle-small-up"></i></a>
@@ -70,11 +70,11 @@
                           </tbody>
                       </table>
                   </div>
-                              <div style="text-align: right; margin-left: 5cm;">
+                              <!-- <div style="text-align: right; margin-left: 5cm;">
                                   <div class="heading_s1 mb-3">
                                     <h5 class="float-left mr-5"><span id="total"></span></h5><br>
                                   </div>
-                                </div>
+                                </div> -->
                              
 
                                 <div style="text-align: right;">
@@ -118,43 +118,100 @@
 
 
 <script>
-  function cartQuantity(cartId,prodId,Price,count){
-    console.log(cartId,prodId,Price,count+'uuuuuuu');
-    let quantity=parseInt(document.getElementById('qty'+prodId).innerText)
-    const totalQuantity=count+quantity
-    const subTotal=parseInt(totalQuantity*Price)
-    console.log(subTotal)
-    document.getElementById(prodId+'-subtotal').innerHTML=subTotal
+
+
+function cartQuantity(cartId, prodId, Price, count) {
+  console.log(cartId, prodId, Price, count + 'uuuuuuu');
+  // let quantity = parseInt(document.getElementById('qty' + prodId).innerText)
+  let quantity=parseInt(document.getElementById('qty'+prodId).innerText)
+
+  const totalQuantity = (parseInt(count )+ quantity)
+  // const subTotal = parseInt(totalQuantity * Price)
+  const subTotal=parseInt(totalQuantity*parseFloat(Price))
+
+  console.log(subTotal)
+  document.getElementById(prodId + '-subtotal').innerHTML = subTotal
+
+  if (isNaN(quantity)) {
+    console.log('Invalid quant value');
+    return;
+  }else if(isNaN(totalQuantity)){
+    console.log('invalid total quant');
+  }else if(isNaN(subTotal)){
+    console.log('invalid subtotal');
+  }else{
+    console.log('okkay');
+  }
+
+  $.ajax({
+    url: '/change-product-quantity',
+    data: {
+      cart: cartId,
+      product: prodId,
+      count: count,
+      quantity: quantity,
+      price: Price
+    },
+    method: 'post',
+    success: (response, grandTotal) => {
+      
+      console.log(grandTotal, 'llllllllllllllllkkk')
+      // document.getElementById('total').innerHTML = parseInt(grandTotal)
+
+      // if (response.stock == 'Full') {
+      //   console.log('out of stock');
+      // }  else if aan rhaazhe 
+      if (response.removeProduct) {
+
+        alert('product removed ')
+        location.reload()
+      } else {
+        console.log(quantity + count);
+        document.getElementById('qty' + prodId).innerText =totalQuantity
+      }
+
+    }
+  })
+}
+
+
+  // function cartQuantity(cartId,prodId,Price,count){
+  //   console.log(cartId,prodId,Price,count+'uuuuuuu');
+  //   let quantity=parseInt(document.getElementById('qty'+prodId).innerText)
+  //   const totalQuantity=count+quantity
+  //   const subTotal=parseInt(totalQuantity*Price)
+  //   console.log(subTotal)
+  //   document.getElementById(prodId+'-subtotal').innerHTML=subTotal
 
     
-    $.ajax({
-      url:'/change-product-quantity',
-      data:{
-        cart:cartId,
-        product:prodId,
-        count:count,
-        quantity:quantity,
-        price:Price
-      },
-      method:'post',
-      success:(response,grandTotal)=>{
+  //   $.ajax({
+  //     url:'/change-product-quantity',
+  //     data:{
+  //       cart:cartId,
+  //       product:prodId,
+  //       count:count,
+  //       quantity:quantity,
+  //       price:Price
+  //     },
+  //     method:'post',
+  //     success:(response,grandTotal)=>{
 
-        console.log(grandTotal,'llllllllllllllllkkk')
-        document.getElementById('total').innerHTML=grandTotal
+  //       console.log(grandTotal,'llllllllllllllllkkk')
+  //       document.getElementById('total').innerHTML=grandTotal
 
-        if(response.stock=='Full'){
-          console.log('out of stock');
-        }
-        else if(response.removeProduct){
+  //       if(response.stock=='Full'){
+  //         console.log('out of stock');
+  //       }
+  //       else if(response.removeProduct){
           
-          alert('product removed ')
-          location.reload()
-        }else{
-          console.log(quantity+count);
-          document.getElementById('qty'+prodId).innerText=quantity+count
-        }
+  //         alert('product removed ')
+  //         location.reload()
+  //       }else{
+  //         console.log(quantity+count);
+  //         document.getElementById('qty'+prodId).innerText=quantity+count
+  //       }
         
-      }
-    })
-  }
+  //     }
+  //   })
+  // }
  </script> 
