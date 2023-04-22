@@ -502,15 +502,20 @@ getWishlist: async (req, res) => {
 
   getProfile:(req,res)=>{
     let userId=req.session.user._id
-
+  
     userhelpers.viewUserOrders(userId).then((response) => {
+      let address=response[0].deliveryDetails;
     //     console.log(response, "this is new response..........");
     loginStatus=true;
     let user=req.session.user.username;
-    res.render('user/profile',{loginheader:true,userName:user,response})
+    res.render('user/profile',{loginheader:true,userName:user,response,address})
       }
     )
     
+  },
+
+  postProfile:(req,res){
+
   },
 
   orderProducts:async(req,res)=>{

@@ -751,7 +751,8 @@ module.exports = {
         userId: mongoose.Types.ObjectId(userId),
       });
       resolve(orders);
-      // console.log(orders, "::::::::::::;");
+      console.log(orders[0].deliveryDetails, "::::::::::::;");
+    
     });
   },
 

@@ -68,6 +68,8 @@ router.post('/get-coupon',authentication.userAuth,controller.applyCoupon)
 
 router.get('/profile',authentication.userAuth,controller.getProfile)
 
+router.post('/profile-address',authentication.userAuth,controller.postProfile)
+
 router.post('/address',authentication.userAuth,controller.saveAddress)
 
 router.get('/view-order-products/:id',authentication.userAuth,controller.orderProducts)
