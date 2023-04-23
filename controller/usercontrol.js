@@ -9,7 +9,7 @@ module.exports = {
     let userId;
     if (req.session.userIn) {
 
-      console.log(req.session.user, "kkkkkoiiiiiii");
+      // console.log(req.session.user, "kkkkkoiiiiiii");
       userId = req.session.user._id;
       console.log(userId);
     }
@@ -206,26 +206,28 @@ module.exports = {
     
   },
 
-  getCartProducts: (req, res) => {
+  getCartProducts:async (req, res) => {
     let user=req.session.user.username;
     loginStatus = true;
     let userId;
     if (req.session.user) {
       userId = req.session.user._id;
     }
-    userhelpers.displayProducts(userId).then(async (products) => {
+    let products =await userhelpers.displayProducts(userId)
+      
       let cartCount = await userhelpers.getCartCount(userId);
-      console.log(cartCount, "======");
+      // console.log(cartCount, "======");
       if (cartCount) {
         res.render("user/cart", {
-          productExist: true,products,
+          products,
+          productExist: true,
           cartCount,loginheader: true,
           userName:user
         });
       } else {
-        res.render("user/cart", { productExist: false, loginheader: true,userName:user });
+        res.render("user/cart", { productExist: false, loginheader: true,userName:user,products });
       }
-    });
+    
   },
 
  
@@ -262,7 +264,7 @@ getWishlist: async (req, res) => {
         await userhelpers
           .ListWishList(req.session.user._id)
           .then((wishlistItems) => {
-            console.log(wishlistItems);
+            console.log(wishlistItems,"asasasasasasas");
     
             res.render("user/view-wishlist", {
               wishlistItems,
@@ -274,14 +276,32 @@ getWishlist: async (req, res) => {
           });
      
     },
+
+    deleteWishList: async (req, res) => {
+      console.log("leeeeeeeeeeeeeleeeelee");
+      console.log(req.body,"leeeeeeeeeeeeeeeeeeeeeeeeeee");
+      console.log("lelelelelelellelelelle");
+      try {
+        await userhelpers.getDeleteWishList(req.body).then((response) => {
+  
+          res.json(response)
+  
+        })
+      } catch (error) {
+        res.status(500)
+      }
+  
+    },
  
     
   
 
   deleteCartProduct: (req, res) => {
+    console.log(req.params.id,"ooooooo")
     userhelpers
       .removeItem(req.params.id, req.session.user._id)
       .then((resposne) => {
+      
         res.redirect("/cart");
       })
       .catch((err) => {
@@ -308,8 +328,8 @@ getWishlist: async (req, res) => {
     let response = await userhelpers.change_Quantity(req.body);
     let total = await userhelpers.getTotalAmount(userId);
     let grandTotal = total[0].totalRevenue;
-    console.log(response, "qqqqqqqqqqqqqqqqq");
-    console.log(grandTotal, "pppppppppppppppppppppp");
+    console.log("qqqqqqqqqqq",response, "qqqqqqqqqqqqqqqqq");
+    console.log("pppppppppppp",grandTotal, "pppppppppppppppppppppp");
 
     // res.json(response,grandTotal)
     // res.status(response).json(grandTotal);
@@ -500,23 +520,33 @@ getWishlist: async (req, res) => {
     :res.status(403).json(response)
   },
 
-  getProfile:(req,res)=>{
+  getProfile:async(req,res)=>{
+    console.log(".............>",req.session.user.address,"...........>");
     let userId=req.session.user._id
-  
-    userhelpers.viewUserOrders(userId).then((response) => {
-      let address=response[0].deliveryDetails;
+    let address= req.session.user.address
+    userhelpers.viewUserOrders(userId).then((order) => {
+      // let address=order[0].deliveryDetails;
     //     console.log(response, "this is new response..........");
     loginStatus=true;
     let user=req.session.user.username;
-    res.render('user/profile',{loginheader:true,userName:user,response,address})
+    res.render('user/profile',{loginheader:true,userName:user,order,address})
       }
     )
     
   },
 
-  postProfile:(req,res){
+  // postProfile:(req,res)=>{
+  //   let user=req.session.user.username;
+  //   let addressProfile=req.body;
+  //   console.log(req.body,"post address profile");
+    
+  //   res.redirect('back')
+  //   // const id="id"+Math.random().toString(16).slice(2);
+  //   //   userhelpers.saveaddress(req.session.user.email,req.body,id).then(()=>{
+  //   //     res.redirect('/checkout')
+    
 
-  },
+  // },
 
   orderProducts:async(req,res)=>{
       console.log(req.params.id,"?????");

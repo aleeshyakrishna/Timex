@@ -231,7 +231,7 @@ module.exports = {
           },
         ]);
 
-        console.log(cartItems, "llllllllllllllllllllllllllllllllllllllllll");
+        // console.log(cartItems, "llllllllllllllllllllllllllllllllllllllllll");
         resolve(cartItems);
       } catch {
         resolve(null);
@@ -255,6 +255,7 @@ module.exports = {
   },
 
   removeItem: (proId, userId) => {
+    
     return new Promise((resolve, reject) => {
       db.cart
         .updateOne(
@@ -263,6 +264,7 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
+          
         });
     });
   },
@@ -659,6 +661,24 @@ module.exports = {
     });
   },
 
+  getDeleteWishList: (body) => {
+    console.log(body);
+
+    return new Promise(async (resolve, reject) => {
+
+        await db.wishlist.updateOne({ _id: body.wishlistId },
+            {
+                "$pull":
+
+                    { wishitems: { productId: body.productId } }
+            }).then(() => {
+                resolve({ removeProduct: true })
+            })
+
+
+    })
+},
+
   placeOrder: (order, carts, total, userId) => {
     console.log(total, "this is total..........");
     console.log(userId, "//////.......///");
@@ -814,6 +834,7 @@ module.exports = {
         };
       })
     },
+    
 
   getUser: (userId) => {
     return new Promise(async (resolve, reject) => {
@@ -873,5 +894,14 @@ module.exports = {
       console.error(error);
       return false;
     }
+  },
+
+  getAddress:(user)=>{
+    return new Promise(async(resolve,reject)=>{
+      await db.user.find({_id:user})
+      resolve(response)
+      console.log(resposne,"lllyyyuuuu");
+    })
+
   },
 };

@@ -1,3 +1,4 @@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <main class="main">
     <section class="mt-50 mb-50">
       <div class="container">
@@ -5,9 +6,15 @@
           <div class="col-12">
             <div class="table-responsive">
               <% if(wishlistItems.length==0){%>
-              <div class="d-flex justify-content-center">
-                <img src="/assets/imgs/banners/no-wishlist" alt="" />
-              </div>
+              <!-- <div class="d-flex justify-content-center">
+                <img src="/assets/imgs/banners/emptywishlist" alt="" />
+              </div> -->
+              <h3 style="width: 10cm; margin-left: 11cm; font-family: Arial, Helvetica, sans-serif;">Your Wishlist Is Empty</h3>
+              <div class="d-flex pb-2" style="justify-content: center; align-items: center;">
+                <img src="\assets\imgs\banner\emptywishlist.jpg" alt="">
+                </div>
+                <a href="/shop" style="width: 10cm; margin-left: 10cm;
+                       " class="btn btn-outline-dark-2 btn-block mb-3"><i class="icon-refresh"></i>CONTINUE SHOPPING</a>
               <%} else{%>
               <table class="table shopping-summery text-center">
                 <thead>
@@ -40,7 +47,7 @@
                     <td class="text-right" data-title="Cart">
                       <button
                         class="btn btn-sm"
-                        onclick="addtocart('<%=wishlistItems.item%>');Swal.fire({
+                        onclick="addtocart('<%=wishlistItems.item%>');swal({
                           position: 'center',
                           icon: 'success',
                           title: 'Product is successfully added to cart',
@@ -72,53 +79,57 @@
   </main>
 
   <script>
-    // function addtocart(proId) {
-    //   console.log(proId);
-    //   $.ajax({
-    //     url: '/add_to_cart/' + proId,
-    //     method: 'get',
-    //     success: (response) => {
-    //       if (response.status) {
-    //         let count = $('#cart-count').html();
-    //         count = parseInt(count) + 1;
-    //         console.log(count);
-    //         $('#cart-count').html(count);
-    //       }
-    //     },
-    //   });
-    // }
-    // function removeItem(wishlistId, prodId) {
-    //   console.log(wishlistId);
-    //   console.log(prodId);
-    //   Swal.fire({
-    //     title: 'Are you sure?',
-    //     text: "You won't be able to revert this!",
-    //     icon: 'warning',
-    //     showCancelButton: true,
-    //     confirmButtonColor: '#3085d6',
-    //     cancelButtonColor: '#d33',
-    //     confirmButtonText: 'Yes, delete it!',
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       $.ajax({
-    //         url: '/delete_wishlist',
-    //         data: {
-    //           wishlistId: wishlistId,
-    //           productId: prodId,
-    //         },
-    //         method: 'DELETE',
-    //         success: (response) => {
-    //           if (response.removeProduct) {
-    //             location.reload();
-    //           }
-    //         },
-    //       });
-    //       Swal.fire(
-    //         'Deleted!',
-    //         'Product is deleted from the wishlist.',
-    //         'success'
-    //       );
-    //     }
-    //   });
-    // }
+    function addtocart(proId) {
+      console.log(proId);
+      $.ajax({
+        // /add-to-cart/:id
+        url: '/add-to-cart/' + proId,
+        method: 'get',
+        success: (response) => {
+          if (response.status) {
+            let count = $('#cart-count').html();
+            count = parseInt(count) + 1;
+            console.log(count);
+            $('#cart-count').html(count);
+          }
+        },
+      });
+    }
+    
+    function removeItem(wishlistId, prodId) {
+      console.log(wishlistId);
+      console.log(prodId);
+      swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      }).then((result) => {
+       
+        if (result) {
+            console.log("this is ajax");
+          $.ajax({
+            url: '/delete_wishlist',
+            data: {
+              wishlistId: wishlistId,
+              productId: prodId,
+            },
+            method: 'DELETE',
+            success: (response) => {
+              if (response.removeProduct) {
+                location.reload();
+              }
+            },
+          });
+          swal(
+            'Deleted!',
+            'Product is deleted from the wishlist.',
+            'success'
+          );
+        }
+      });
+    }
   </script>

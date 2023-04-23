@@ -40,6 +40,8 @@ router.get('/wishlist/:id',authentication.userAuth,controller.getWishlist)
 
 router.get('/view-wishlist',authentication.userAuth,controller.viewWishList)
 
+router.delete('/delete_wishlist',authentication.userAuth, controller.deleteWishList)
+
 // router.get('/get-Wishlist-products',authentication.userAuth,controller.getWishlistProducts)
 
 router.post('/change-product-quantity',authentication.userAuth,controller.changeQuantity) 
@@ -68,7 +70,7 @@ router.post('/get-coupon',authentication.userAuth,controller.applyCoupon)
 
 router.get('/profile',authentication.userAuth,controller.getProfile)
 
-router.post('/profile-address',authentication.userAuth,controller.postProfile)
+// router.post('/profile-address',authentication.userAuth,controller.postProfile)
 
 router.post('/address',authentication.userAuth,controller.saveAddress)
 

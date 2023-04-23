@@ -22,7 +22,7 @@
                       <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab"
                         aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
                     </li>
-                    <a class="nav-link" href="/logo"><i class="fi-rs-sign-out mr-10"></i>wishlist</a>
+                    <a class="nav-link" href="/view-wishlist"><i class="fi-rs-sign-out mr-10"></i>wishlist</a>
                     <li class="nav-item">
                       <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                     </li>
@@ -67,13 +67,13 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <% response.forEach(function(order) { %>
+                              <% order.forEach(function(order) { %>
                                 <tr>
-                                  <td><%= response._id %></td>
-                                  <td><%= response.date %></td>
-                                  <td><%= response.paymentMethod %></td>
-                                  <td><%= response.status %></td>
-                                  <td>₹<%= response.total %> for <%= response.quantity %> item</td>
+                                  <td><%= order._id %></td>
+                                  <td><%= order.date %></td>
+                                  <td><%= order.paymentMethod %></td>
+                                  <td><%= order.status %></td>
+                                  <td>₹<%= order.total %> for <%= order.quantity %> item</td>
                                   <td><a href="" class="btn-small d-block">View</a></td>
                                 </tr>
                               <% }); %>
@@ -112,39 +112,35 @@
                       </div>
                     </div>
                   </div>
-                  <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-  
-  
-                      <div class="row">
-                        <% for (var i = 0; i < address.length; i++) { %>
+                  <div class="tab-pane fade" id="address" role="tabpanel" >
+               
+                            
+                              <% for (var i = 0; i < address.length; i++) { %>
 
-                          <p><%= address[i] %></p>
-                    
-                       
-                       
-                        <div class="col-lg-6">
-                          <div class="card">
-                            <div class="card-header">
-                              <h5 class="mb-0">Shipping Address</h5>
-                            </div>
-                            <div class="card-body">
-                              <address>
-                                <%= address.name %><br>
-                                <%= address.phone %><br>
-                                <%= address.billing_address %><br>
-                                <%= address.billing_address2 %><br>
-                                <%= address.city %><br>
-                                <%= address.state %><br>
-                                <%= address.zipcode %>
-                              </address>
-                              <a href="/editAddress/<%= address._id %>" class="btn-small">Edit</a>
+                               <p> <%= address[i] %></p>
+                              <div class="card" >
+                                <div class="div1 card-body">
+                                  
+                                
+                                  <p class="font-weight-bold" ><%=address[i].name%> - <%=address[i]. contactNumber%></p>
+                                  <p class="font-weight-bold"><%=address[i].firstLine%> - <%=address[i].secondLine%> </p>
+                                  <p class="font-weight-bold"><%=address[i].city%> - <%=address[i].state%> - <%=address[i]. pincode%></p>
+                
+                                  <a href="/editAddress/<%= address._id %>"  class="btn-small">Edit</a>
                               <a style="margin-left:100px;" href="" class="btn-small" onclick="deleteAddress('<%= address._id %>')">Delete</a>
-                            </div>
-                          </div>
-                        </div>
-                        <% }; %>
-                      </div>
+
+                                </div>
+                                
+                              </div>
+                              <% }; %>
+                            
+                        
+                     
+                        
+                     
                       <div class="ship_detail">
+                      
+
                         <div class="form-group">
                           <div class="chek-form">
                             <div class="custome-checkbox">
@@ -155,8 +151,9 @@
                             </div>
                           </div>
                         </div>
+
                         <div id="collapseAddress" class="different_address collapse in">
-                          <form action="/profile" method="post" id="address">
+                          <form action="/profile-address" method="post" id="address">
             
                             <div class="form-group">
                               <label for="name">First Name *</label>
@@ -215,6 +212,9 @@
                           </form>
   
                         </div>
+
+                        
+
                       </div>
                     </div>
                   </div>
