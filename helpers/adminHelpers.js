@@ -192,8 +192,25 @@ module.exports={
                     path:'$products', 
                     includeArrayIndex: 'string'
                   }
-                }, {
+                },{
+                    
+                        $lookup: {
+                          from: 'users', 
+                          localField: 'userId', 
+                          foreignField: '_id', 
+                          as: 'details'
+                       
+                      },
+                },
+                {
+                    '$unwind': {
+                      path: '$details', 
+                      includeArrayIndex: 'string'
+                    }
+                  },
+                 {
                   $project: {
+                    details:1,
                     _id:1,
                     deliveryDetails: 1, 
                     userId: 1, 
@@ -203,7 +220,8 @@ module.exports={
                     totalAmount: 1, 
                     date: 1
                   }
-                }
+                },
+
               ]
             // {
             //   $unwind: '$orders'
@@ -212,7 +230,7 @@ module.exports={
             //   $sort: { 'orders: createdAt': -1 }
             // }
           ]).then((response) => {
-            console.log(response,"this is response of admin order list");
+            console.log(response,"this is response of admin order list------------");
             resolve(response)
     
           })
@@ -386,6 +404,16 @@ module.exports={
                             // console.log(response,"riiiiioooooooooooooo");
                         })
             })
+      },
+
+      searchItemCoupon:(item)=>{
+        return new Promise(async(resolve,reject)=>{
+                db.coupon.find({
+                    couponName:item}).then((response)=>{
+                        resolve(response)
+                        console.log(response,"ppppppppppppppppppp");
+                    })
+        })
       }
 
     

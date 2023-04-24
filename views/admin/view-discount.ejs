@@ -1,5 +1,24 @@
 <div class="container-fluid">
     <section class="content-main container w-100">
+
+        <div class="col-search" style="padding-left: 18cm; padding-top: 1cm;">
+            <form class="searchform" action="/admin/search-item-coupon" method="post">
+              <div class="input-group">
+                <input
+                  list="search_terms"
+                  type="text"
+                  class="form-control"
+                  placeholder="Search term"
+                  name="searchItem"
+                />
+                <button class="btn btn-light bg" type="submit">
+                  <i class="material-icons md-search"></i>
+                </button>
+              </div>
+              
+            </form>
+          </div>
+
       <div class="content-header">
         <div>
           <h2 class="content-title card-title">Discount</h2>

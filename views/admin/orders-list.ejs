@@ -20,7 +20,7 @@
                 <th scope="col">User Name</th>
                 <th scope="col">Order Date</th>
                 <th scope="col">Order Status</th>
-                <th scope="col">Payment status</th>
+                <th scope="col">Payment Method</th>
                 <th scope="col" class="text-end">Option</th>
               </tr>
             </thead>
@@ -28,13 +28,14 @@
               <% response.forEach(function(response) { %>
               <tr>
                 <td><%=response._id%></td>
-                <td><b>you havae to fix</b></td>
+                <td><b><%=response.details.username%></b></td>
                 <td><%=getDate(response.date)%></td>
                 <td>
                   <span class="badge rounded-pill alert-warning"
                     ><%=response.status%>
                   </span>
                 </td>
+                <td><%=response. paymentMethod%></td>
                 
                 <td class="text-end">
                   <a

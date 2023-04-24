@@ -339,7 +339,16 @@ module.exports={
 
     })
   },
+
+  searchItemCoupon:async(req,res)=>{
+
+    await adminHelper.searchItemCoupon(req.body.searchItem).then((response)=>{       
+      res.render('admin/view-discount',{layout:'adminLayout',adminStatus:true,response})
+    })
+    
   }
+
+}
 
 
 
@@ -351,5 +360,3 @@ module.exports={
 
 
 
-
-    

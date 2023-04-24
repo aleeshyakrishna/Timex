@@ -82,6 +82,9 @@ router.post('/sales_report',authentication.adminAuth,adminControl.salesReport)
 
 router.post('/search-item',authentication.adminAuth,adminControl.searchItem)
 
+router.post('/search-item-coupon',authentication.adminAuth,adminControl.searchItemCoupon)
+
+
 
 
 
