@@ -42,7 +42,7 @@
                 <td>
                    <a href="/admin/edit-category/<%= viewCategory._id %>" class="btn btn-xs btn-success"> Edit</a> 
                   
-                  <a href="/admin/delete-category/<%= viewCategory._id %>" class="btn btn-xs btn-danger" onclick="return deleteAlert()"> Delete</a>
+                  <a  class="btn btn-xs btn-danger" onclick=" deleteAlert('<%= viewCategory._id %>')"> Delete</a>
 
                   <!-- <a href="/admin/delete_category/<%= viewCategory._id %>" class="btn btn-xs btn-danger"   onclick="return deleteAlert(), event.preventDefault()"> Delete</a> -->
                   <!-- <a href="/admin/delete-category/<%= viewCategory._id %>" class="btn btn-xs btn-danger"   onclick="return deleteAlert(), event.preventDefault()"> Delete</a> -->
@@ -59,31 +59,65 @@
   </div>
 </section>
 
-  <script>
-    function deleteAlert()
-   {
-  
-    swal({
-    title: "Are you sure?",
-    text: "Once deleted, you will not be able to recover this imaginary file!",
-    icon: "warning",
-    buttons: ["Cancel", "Delete"],
-    dangerMode: true,
-  })
-  .then((willDelete) => {
-    if (willDelete) {
-      swal("Poof! Your imaginary file has been deleted!", {
-        icon: "success",
-      });
-    } else {
-      swal("Your imaginary file is safe!");
-    }
-  });
-    
-  } 
-  </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-<script>
+  <script>
+  //   function deleteAlert()
+  //  {
+  
+  //   swal({
+  //   title: "Are you sure?",
+  //   text: "Once deleted, you will not be able to recover this imaginary file!",
+  //   icon: "warning",
+  //   buttons: ["Cancel", "Delete"],
+  //   dangerMode: true,
+  // })
+  // .then((willDelete) => {
+  //   if (willDelete) {
+  //     swal("Poof! Your imaginary file has been deleted!", {
+  //       icon: "success",
+  //     });
+  //   } else {
+  //     swal("Your imaginary file is safe!");
+  //   }
+  // });
+    
+  // } 
+
+  function deleteAlert(prodId) {
+   
+   console.log(prodId);
+   swal({
+     title: 'Are you sure?',
+     text: "You won't be able to revert this!",
+     icon: 'warning',
+     showCancelButton: true,
+     confirmButtonColor: '#3085d6',
+     cancelButtonColor: '#d33',
+     confirmButtonText: 'Yes, delete it!',
+   }).then((result) => {
+     console.log(result,"ok");
+     if (result) {
+       $.ajax({
+         url: '/admin/delete-category/'+prodId,
+        
+         method: 'get',
+         success: (response) => {
+           if (response) {
+             location.reload();
+           }
+         },
+       });
+       swal(
+         'Deleted!',
+         'Product is deleted from the category lsit.',
+         
+         'success'
+       );
+     }
+   });
+ }
+  
 
 function validate() {
   var categoryInput = document.getElementById("category").value;

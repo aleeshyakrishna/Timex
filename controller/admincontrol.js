@@ -1,3 +1,4 @@
+const { response } = require('../app')
 const adminHelper = require('../helpers/adminHelpers')
 const db =require('../model/connection')
 const multer = require('multer')
@@ -280,6 +281,14 @@ module.exports={
      
     },
 
+    removeCoupon:(req,res)=>{
+      console.log(req.body.coupId,"iiiiiiiiiii");
+      adminHelper.removeCoupon(req.body.coupId).then((response)=>{
+        res.json({status:true})
+      })
+      
+    },
+
     addNewCoupon: (req,res)=>{
       // console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
      
@@ -300,14 +309,46 @@ module.exports={
       res.render('admin/sales-report',{layout:'adminLayout',adminStatus:true,response})
     })
     
+  },
+
+  salesReport:async(req,res)=>{
+ 
+    console.log(req.body,"saleeeeeeeeeeeeeeeeeeeeeeeees");
+    
+     await adminHelper.getTotalAmount(req.body).then((response)=>{
+      res.render('admin/sales-report', { layout: "adminLayout", adminStatus, response })
+
+      })
+    // console.log(total,"uuuuuuuuuuuuuuuuuuuuuu");
+  
+      // adminHelper.postReport(req.body).then((orderdata) => {
+  
+      //   orderdata.forEach(orders => { Details.push(orders.orders) })
+  
+  
+      // })
+  
+  
+    
+  },
+
+  searchItem:async(req,res)=>{
+    await adminHelper.searchItem(req.body.searchItem).then((response)=>{
+          
+            res.render("admin/view-product",{layout:"adminLayout",adminStatus,response})
+
+    })
+  },
   }
+
+
 
 
 
     
       
   
-}
+
 
 
 

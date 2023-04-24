@@ -253,6 +253,16 @@ module.exports={
     
       },
 
+      removeCoupon:(coupId)=>{
+        return new Promise(async(resolve,reject)=>{
+            await db.coupon.deleteOne({_id:coupId}).then((response)=>{
+                resolve(response)
+                // console.log(response,"opopopopo");
+            })
+        })
+            
+      },
+
       addNewCoupon:(data)=>{
 
         return new Promise(async(resolve,reject)=>{
@@ -314,6 +324,68 @@ module.exports={
           
             
         })
+      },
+
+      getTotalAmount: (date) => {
+        let start = new Date(date.startdate);
+        let end = new Date(date.enddate);
+        return new Promise(async (resolve, reject) => {
+    
+    
+          await db.order.aggregate([
+    
+            
+            {
+              $match: {
+                $and: [
+                  { "status": "Delivered" },
+                  { "date": { $gte: start, $lte: end } }
+    
+                ]
+              }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "result"
+                  }
+              },
+             {
+               $unwind: {
+                    path: "$result",
+                    includeArrayIndex: 'string'
+                        }
+             },
+            // {
+            //   $project: {
+            //     deliveryDetails: 0, 
+            //     products: 0
+            //   }
+            // }
+          ]).then((response)=>{
+    
+    
+            resolve(response,"rrrrrrrrrrrrrrrrr")
+            // console.log(total[0].total[0], '------------------------------');
+    
+    
+          })
+    
+        })
+    
+      },
+
+      searchItem:(item)=>{
+            return new Promise((resolve,reject)=>{
+                db.products.find({$or:[{
+                    Productname:item },{
+                        category:item}]}).then((response)=>{
+                            resolve(response)
+                            // console.log(response,"riiiiioooooooooooooo");
+                        })
+            })
       }
 
     

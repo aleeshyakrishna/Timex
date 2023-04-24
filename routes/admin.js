@@ -72,9 +72,15 @@ router.post("/order-details", authentication.adminAuth, adminControl.postOrderDe
 
 router.get('/view-discount', authentication.adminAuth,adminControl.getDiscount)
 
+router.post('/delete-coupon/:id',authentication.adminAuth,adminControl.removeCoupon)
+
 router.post('/addCoupon', authentication.adminAuth,adminControl.addNewCoupon)
 
 router.get('/sales-report',authentication.adminAuth,adminControl.getSalesreport)
+
+router.post('/sales_report',authentication.adminAuth,adminControl.salesReport)
+
+router.post('/search-item',authentication.adminAuth,adminControl.searchItem)
 
 
 

@@ -1,82 +1,85 @@
-<div class="container-fluid">
-    <section class="content-main container w-100">
-      <div class="content-header">
-        <div>
-          <h2 class="content-title card-title">SALES REPORT</h2>
-        </div>
-        <button style="color: white;" id="download" class=" mt-15 btn btn-suucess bg-dark" >Download sales report</button>
-       
-      </div>
-      
-      <div class="card mb-4">
-        <div id="container_content" class="card-body">
-          <div class="table-responsive">
 
-            
-            <table class="table table-hover">
-            <!-- if -->
-              <!-- <div class="d-flex justify-content-center">
-                <img src="/assets/imgs/banners/empty-cart-1546860808" alt="" />
-              </div> -->
-             <!-- else -->
-              <thead>
-                <tr>
-                  <th>sl no</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">OrderId</th>
-                  <th scope="col">UserName</th>
-                  <th scope="col">Price</th>
-                  
-                  <th scope="col">Payment Method</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- for loop -->
-                <% response.forEach(function(data,index){ %>
-                
-                <tr>
-                  <td><%= index+1 %></td>
-                  <td><%= data.date %></td>
-                  <td><b><%= data._id%></b></td>
-                  <td><%= data.result.username%></td>
-                  <td><%=data.totalAmount%></td>
-                  <td><%=data.paymentMethod%></td>
-                  <td></td>
-
-                  <td>
-                    <!-- <span class="badge rounded-pill alert-warning"
-                      >
-                    </span> -->
-                  </td>
-                  
-                  <!-- <td class="text-end">
-                    <a
-                    href=""
-                      class="btn btn-md rounded font-sm"
-                      >Detail</a
-                    >
-                  </td> -->
-                 
-                </tr>
-                <% })%> 
-             <!-- loop close  -->
-              </tbody>
-            </table>
+ <div class="main_container container">
+    <% if(response.length==0){%>
+     <div class="d-flex justify-content-center align-items-center">
+       <h2 class="">No Orders Available</h2>
+     </div>
+     <%}else{%>
+     <div class="d-flex justify-content-center m-4">
+        <button style="color: white; margin-right: 1cm;" id="download" class=" mt-15 btn btn-suuces bg-danger" >Download sales report</button>
+        
     
-          </div>
-          <!-- table-responsive //end -->
-        </div>
-        <!-- card-body end// -->
-      </div>
-      <!-- card end// -->
-    </section>
-    <!-- content-main end// -->
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+     <div>
+ 
+ <form action="/admin/sales_report" method="POST">
+   <div> <input type="date" name="startdate" id="startdate"></div>
+   <div><input type="date" name="enddate" id="enddate"></div>
+   
+ </div> 
+   <div class="ml-3 my-auto"><button class="btn btn-primary " type="submit">submit</button></div>
+    
+    <!-- <input class="ms-1" type="text" name="daterange" value="01/01/2022 - 12/01/2023"/> -->
+ </form>
+    
+     </div>
+ <table class="table table-striped" id="container_content">
+     <thead>
+       <tr>
+         <th scope="col">OrderId</th>
+         <th scope="col">User Name</th>
+         <th scope="col">Item Name</th>
+         <th scope="col">Quantity</th>
+         <th scope="col">Price</th>
+         <th scope="col">Payment Method</th>
+         <th scope="col">Delivered Date</th>
+       </tr>
+     </thead>
+     <tbody>
+        <% response.forEach(function(data,index){ %>
+       <tr>
+        <td><%= index+1 %></td>
+        <td><%= data.date %></td>
+        <td><b><%= data._id%></b></td>
+        <td><%= data.result.username%></td>
+        <td><%=data.totalAmount%></td>
+        <td><%=data.paymentMethod%></td>
+        <td></td>
+       </tr>
+       <%})%>
+      
+     </tbody>
+   </table>
+ </div>
+ <br>
+ <br>
+ <hr>
+ <hr>
+ <%}
+ %>
+ 
+ </div>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <script>
+ <script>
 
-window.onload=function(){
+//  $(document).ready(function ($) {
+//          $(document).on('click', '.btn_print', function (event) {
+//              event.preventDefault();
+//              var element = document.getElementById('container_content');
+//              let randomNumber = Math.floor(Math.random() * (10000000000 - 1)) + 1;
+//              var opt = {
+//                  margin: 0,
+//                  filename: 'SalesReport' + randomNumber + '.pdf',
+//                  html2canvas: { scale: 10 },
+//                  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+//              };
+//              html2pdf().set(opt).from(element).save();
+//          });
+//      });
+
+
+     window.onload=function(){
     document.getElementById('download').addEventListener("click",()=>{
          let invoice= this. document.getElementById('container_content')
          console.log(invoice);
@@ -85,9 +88,13 @@ window.onload=function(){
     })
 }
 
-    $(document).ready(function () {
-        $('#example').DataTable();
-    });
-</script>
-
-<!-- Modal -->
+    //  function export_data() {
+    //      let data = document.getElementById('container_content');
+    //      var fp = XLSX.utils.table_to_book(data, { sheet: 'vishal' });
+    //      XLSX.write(fp, {
+    //          bookType: 'xlsx',
+    //          type: 'base64'
+    //      });
+    //      XLSX.writeFile(fp, 'test.xlsx');
+    //  }
+ </script>

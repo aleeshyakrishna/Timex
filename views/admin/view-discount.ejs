@@ -52,9 +52,9 @@
                   
                   <td class="text-end">
                     <a
-                    href=""
+                    onclick="removeCoupon('<%=data._id%>')"
                       class="btn btn-md rounded font-sm"
-                      >Detail</a
+                      >Delete</a
                     >
                   </td>
                  
@@ -123,5 +123,43 @@ aria-hidden="true">
 </div>
 
 </form>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+
+    function removeCoupon(coupId){
+        console.log(coupId);
+        swal({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+        }).then((result)=>{
+          
+            if(result){
+                $.ajax({
+                url:'/admin/delete-coupon/'+coupId,
+                method:'post',
+                data:{
+                    coupId:coupId
+                },
+                success:(response)=>{
+                   console.log(response,"ppp"); 
+                    if(response.status){
+                     location.reload()
+                    
+                    }
+
+                    
+                }
+            })
+            }
+        
+            
+        });
+    }
+</script>
 
 <!-- Modal -->
