@@ -82,6 +82,9 @@ router.get('/view-order-products/:id',authentication.userAuth,controller.orderPr
 
 router.post('/order-cancel/:id',authentication.userAuth,controller.cancelOrder)
 
+router.post('/sort', authentication.userAuth, controller.postSort)
+
+
 
 
 

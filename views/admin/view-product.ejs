@@ -88,6 +88,24 @@
         <!-- table-responsive end// -->
       </div>
     </div>
+    <div style="padding-left: 10cm;" class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-start">
+          <% for(let i=1;i<=pages2;i++){%>
+          <li class="page-item active">
+            <a class="page-link" href="/admin/view-product?page=<%=i%>"
+              ><%= i%></a
+            >
+          </li>
+          <%}%>
+          <!-- <li class="page-item">
+              <a class="page-link" href="#"
+                ><i class="fi-rs-angle-double-small-right"></i
+              ></a>
+            </li> -->
+        </ul>
+      </nav>
+    </div>
   </section>
   
   <script>

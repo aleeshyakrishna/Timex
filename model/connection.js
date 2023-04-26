@@ -164,9 +164,18 @@ const addressSchema=new mongoose.Schema({
 const orderSchema = new mongoose.Schema({
 
   deliveryDetails:{
+    name:{
+        type:String,
+    },
     address: {
       type: String,
 
+    },
+    post:{
+        type:String
+    },
+    city:{
+        type:String,
     },
     mobile: {
       type: String,

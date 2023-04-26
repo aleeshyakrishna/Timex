@@ -3,12 +3,14 @@
       <div class="container">
         <div class="content-header">
           <div>
+            <br>
             <h2 class="content-title card-title">Order detail</h2>
+            <hr>
             
             <p>Details for Order ID: <%= order[0]._id %> </p>
           </div>
         </div>
-        <div class="card">
+        <div class="card" style="border-color: black;">
           
           <div class="card-body">
             <div class="row mb-50 mt-20 order-info-wrap">
@@ -19,10 +21,10 @@
                   </span>
                   <div class="text">
                     <h6 class="mb-1">Customer</h6>
-                    <p class="mb-1">
-                  Joel <br> <template class="cf_email"
-                        data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br> +91
-                      <%= order[0].deliveryDetails.mobile %>
+                    <p class="mb-1"> <%=userName%>
+                  <br> <template class="cf_email"
+                        data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template><%=email%> <br> +91
+                      <%= order[0].deliveryDetails.mobile %> - 
                     </p>
                     <a href="/profile">View profile</a>
                   </div>
@@ -49,20 +51,22 @@
                   </span>
                   <div class="text">
                     <h6 class="mb-1">Deliver to</h6>
-                    <p class="mb-1">
-                      <%= order[0].deliveryDetails.address %>
-                      <br><%= order[0].deliveryDetails.pincode%><br><%= order[0].city %><br><%= order.state %><br>
+                    <p class="mb-1"><%= order[0].deliveryDetails.name %><br>
+                      <%= order[0].deliveryDetails.address %> - <%=order[0].deliveryDetails.post %> <br><%=order[0].deliveryDetails.city %>
+                      - <%= order[0].deliveryDetails.pincode%><br><%= order[0].deliveryDetails.mobile %><br><%= order.state %><br>
                     </p>
+                    <hr>
                     <a href="/profile">View profile</a>
                   </div>
                 </article>
               </div> <!-- col// -->
             </div> <!-- row // -->
-            <div class="row">
+            
+            <div class="row" >
               <div class="col-lg-7">
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead>
+                <div class="table-responsive" >
+                  <table class="table" >
+                    <thead >
                       <tr>
                         <th width="40%">Product</th>
                         <th width="20%">Unit Price</th>
@@ -122,16 +126,17 @@
                 
                 <div class="h-25 pt-4">
                   <% if (order[0].status === "Delivered") { %>
-                    <a id="updateItem" class="btn btn-danger"
+                    <a  style="color:black; background-color: red;"id="updateItem" class="btn btn-danger"
                      onclick="updateStatus('Returned','<%= order[0]._id %>')">Return Items</a>
-                    <% } else if (order.status === "Return") { %>
-                     
+                    <% } else if (order[0].status === "Returned") { %>
+                      <a href="/shop" style="width: 7cm; background-color: green;
+                      margin-top: 0cm;" class="btn btn-outline-dark-2 btn-block mb-3"><i class="icon-refresh"></i>CONTINUE SHOPPING</a>
                     <% } else { %>
                       <% if (order[0].status !== "cancelled") { %>
-                            <a id="updateItem" class="btn btn-danger"
+                            <a style="color:black; background-color: red;" id="updateItem" class="btn btn-danger"
                             onclick=" updateStatus('cancelled','<%= order[0]._id %>')">Cancel Items</a>
                      <% }else{%>
-                      <a href="/shop" style="width: 10cm; 
+                      <a href="/shop" style="width: 7cm; background-color: green;
                       margin-top: 0cm;" class="btn btn-outline-dark-2 btn-block mb-3"><i class="icon-refresh"></i>CONTINUE SHOPPING</a>
                       <%} %>
                     <% } %>
@@ -150,7 +155,7 @@
             src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
           <script>
             document.write(new Date().getFullYear())
-          </script> ©, Evara - HTML Ecommerce Template .
+          </script>
         </div>
         <div class="col-sm-6">
           <div class="text-sm-end">

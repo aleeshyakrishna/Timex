@@ -75,17 +75,29 @@ module.exports={
         })
     },
 
-    getViewProducts:()=>{
+    getViewProducts:(pageNum, perPage)=>{
         return new Promise(async(resolve,reject)=>{
-            await db.products.find().exec().then((response)=>{
-                resolve(response)
-                // console.log(response,"hhhhhh");
+            await db.products.find()
+            .skip((pageNum - 1) * perPage).limit(perPage)
+            .then((response)=>{
+              resolve(response)
+                console.log(response,"hhhhhh");
             })
 
         })
     },
 
-
+    // ViewProduct: (pageNum, perPage) => {
+    //   return new Promise(async (resolve, reject) => {
+    //     await user.product
+    //       .find()
+    //       .skip((pageNum - 1) * perPage).limit(perPage)
+    //       .then((response) => {
+    //         resolve(response);
+    //       });
+  
+    //   });
+    // },
     
 
     
@@ -107,6 +119,7 @@ module.exports={
           });
         });
       },
+      
       
     
     
@@ -306,6 +319,8 @@ module.exports={
       },
 
       getSalesData:(req,res)=>{
+       try{
+
         return new Promise(async(resolve,reject)=>{
           await  db.order.aggregate([
                     {
@@ -337,14 +352,12 @@ module.exports={
                   ]).then((response)=>{
                     
                         console.log(response,"iiiiiiiiiiiiiiiiii");
-                        resolve(response)
-                       
-                
-                     
-                  })
-          
-            
+                        resolve(response)                    
+                  })          
         })
+      }catch(error){
+        reject(error);
+       }
       },
 
       getTotalAmount: (date) => {

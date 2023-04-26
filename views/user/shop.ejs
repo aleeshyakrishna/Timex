@@ -19,7 +19,24 @@
                                 <% }) %>
                             </ul>
                         </div>
-                        
+                        <form id="sort-form" method="POST" action="/sort">
+                            <div class="sort-container">
+                              <label for="sort-select">Sort by:</label>
+                              <select
+                                id="sort-select"
+                                name="selectedValue"
+                                onchange="this.form.submit()"
+                              >
+                                <option value=""><a href="#">Price</a></option>
+                                <option value="price-low-to-high">
+                                  <a href="#">Price: Low to High</a>
+                                </option>
+                                <option value="price-high-to-low">
+                                  <a href="#">Price: High to Low</a>
+                                </option>
+                              </select>
+                            </div>
+                          </form>
                         
                     </div>
 
@@ -102,6 +119,22 @@
                     
                 </div>
             </div>
+            <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-start">
+                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                    <li class="page-item"><a class="page-link" href="#">02</a></li>
+                    <li class="page-item"><a class="page-link" href="#">03</a></li>
+                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">16</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#"
+                        ><i class="material-icons md-chevron_right"></i
+                      ></a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
         </section>
     </main>
 

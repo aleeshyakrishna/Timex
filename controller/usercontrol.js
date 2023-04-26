@@ -246,7 +246,7 @@ module.exports = {
       userId = req.session.user._id;
     }
     let products = await userhelpers.displayProducts(userId);
-
+    wishcount = await userhelpers.getWishCount(req.session.user._id);
     let cartCount = await userhelpers.getCartCount(userId);
     // console.log(cartCount, "======");
     if (cartCount) {
@@ -254,6 +254,7 @@ module.exports = {
         products,
         productExist: true,
         cartCount,
+        wishcount,
         loginheader: true,
         userName: user,
       });
@@ -291,16 +292,18 @@ module.exports = {
 
   viewWishList: async (req, res) => {
     wishcount = await userhelpers.getWishCount(req.session.user._id);
+    let cartCount = await userhelpers.getCartCount(req.session.user._id);
+
     console.log(wishcount, "this is count of wishlist");
     let user = req.session.user.username;
     await userhelpers
       .ListWishList(req.session.user._id)
       .then((wishlistItems) => {
-        console.log(wishlistItems, "asasasasasasas");
 
         res.render("user/view-wishlist", {
           wishlistItems,
           wishcount,
+          cartCount,
           userName: user,
           loginheader: true,
         });
@@ -463,16 +466,19 @@ module.exports = {
     });
   },
   //coupeeeeeeeeeeeeeeeeen
-  getOrder: (req, res) => {
+  getOrder: async(req, res) => {
     // console.log("llllllllllll");
 
     let userId = req.session.user._id;
     let user = req.session.user.username;
     let count = userhelpers.countCoupon(userId);
-
+    let  wishcount =await  userhelpers.getWishCount(req.session.user._id);
+    let cartCount = await  userhelpers.getCartCount(userId);
     res.render("user/order-success", {
       loginheader: true,
       user: userId,
+      wishcount:wishcount,
+      cartCount:cartCount,
       userName: user,
     });
 
@@ -552,14 +558,18 @@ module.exports = {
     console.log(".............>", req.session.user.address, "...........>");
     let userId = req.session.user._id;
     let address = req.session.user.address;
-    userhelpers.viewUserOrders(userId).then((order) => {
+    userhelpers.viewUserOrders(userId).then(async(order) => {
       // let address=order[0].deliveryDetails;
       //     console.log(response, "this is new response..........");
+      wishcount = await userhelpers.getWishCount(req.session.user._id);
+      let cartCount = await userhelpers.getCartCount(userId);
       loginStatus = true;
       let user = req.session.user.username;
       res.render("user/profile", {
         loginheader: true,
         userName: user,
+        wishcount,
+        cartCount,
         order,
         address,
       });
@@ -579,14 +589,17 @@ module.exports = {
   // },
 
   orderProducts: async (req, res) => {
-    console.log(req.params.id, "?????");
+    let email=req.session.user.email;
+    // console.log(req.params.id, "?????");
     let order = await userhelpers.getOrderProducts(req.params.id);
+    let wishcount = await userhelpers.getWishCount(req.session.user._id);
+      let cartCount = await userhelpers.getCartCount(req.session.user._id);
     loginStatus = true;
     let user = req.session.user.username;
     res.render("user/view-order-products", {
-      loginheader: true,
+      loginheader: true,wishcount,cartCount,
       userName: user,
-      order,
+      order,email
     });
   },
 
@@ -602,4 +615,19 @@ module.exports = {
       res.json({ status: true });
     }
   },
+  
+  postSort: async (req, res) => {
+    let sortOption = req.body['selectedValue'];
+    let viewCategory = await adminhelpers.viewAddCategory()
+    console.log(viewCategory,"hhhhhhhhhhhhhhhhhh");
+    userhelpers.postSort(sortOption).then(async(response) => {
+      let wishcount = await userhelpers.getWishCount(req.session.user._id);
+      let cartCount = await userhelpers.getCartCount(req.session.user._id);
+      if (response) {
+
+        res.render('user/shop-new', { response, viewCategory, cartCount, wishcount })
+      }
+    })
+  },
+
 };

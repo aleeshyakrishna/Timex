@@ -1,5 +1,6 @@
 const { response } = require("../app");
 const adminHelper = require("../helpers/adminHelpers");
+const userhelpers = require("../helpers/userhelpers");
 const db = require("../model/connection");
 const multer = require("multer");
 
@@ -95,11 +96,37 @@ module.exports = {
     });
   },
 
-  viewProducts: (req, res) => {
-    adminHelper.getViewProducts().then((response) => {
+
+  // getViewproduct: async (req, res) => {
+  //   const pageNum = req.query.page;
+  //   const currentPage = pageNum;
+  //   const perPage = 10;
+  //   const documentCount = await userhelpers.documentCount();
+  //   let pages2 = Math.ceil(parseInt(documentCount) / perPage);
+  //   adminHelper.ViewProduct(pageNum, perPage).then((response) => {
+  //     res.render("admin/view-product", {
+  //       layout: "adminLayout",
+  //       adminStatus,
+  //       response,
+  //       currentPage,
+  //       documentCount,
+  //       pages2
+  //     });
+  //   });
+  // },
+//nowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+  viewProducts: async(req, res) => {
+    const pageNum = req.query.page;
+    console.log(pageNum,"`````````````````````````````````````````````");
+    const currentPage = pageNum;
+    const perPage = 5;
+    const documentCount = await userhelpers.documentCount();
+    console.log(documentCount,"///////////////////////");
+    let pages2 = Math.ceil(parseInt(documentCount) / perPage);
+    adminHelper.getViewProducts(pageNum, perPage).then((response) => {
       res.render("admin/view-product", {
-        layout: "adminLayout",
-        response,
+        layout: "adminLayout",documentCount,
+        response,pages2,currentPage,
         adminStatus,
       });
     });
@@ -350,11 +377,11 @@ module.exports = {
   },
 
   getSalesreport: (req, res) => {
+
     //date,orderid,username,priceTotal,payment method
     adminHelper.getSalesData().then((response) => {
-      console.log(response, "the sales reportttttttttttttttttttttttttt");
       // let username=response[0].user[0].username;
-      console.log(response[0].result.username, "qqqqqqqqqqqqqqqqqqqqqqqq");
+      
       res.render("admin/sales-report", {
         layout: "adminLayout",
         adminStatus: true,
@@ -381,13 +408,21 @@ module.exports = {
 
     // })
   },
-
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
   searchItem: async (req, res) => {
+    const pageNum = req.query.page;
+    // console.log(pageNum,"`````````````````````````````````````````````");
+    const currentPage = pageNum;
+    const perPage = 5;
+    const documentCount = await userhelpers.documentCount();
+    console.log(documentCount,"///////////////////////");
+    let pages2 = Math.ceil(parseInt(documentCount) / perPage);
+    
     await adminHelper.searchItem(req.body.searchItem).then((response) => {
       res.render("admin/view-product", {
-        layout: "adminLayout",
-        adminStatus,
-        response,
+        layout: "adminLayout",currentPage,
+        adminStatus,documentCount,
+        response,pages2,
       });
     });
   },

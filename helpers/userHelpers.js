@@ -691,10 +691,10 @@ module.exports = {
   },
 
   placeOrder: (order, carts, total, userId) => {
-    console.log(total, "this is total..........");
-    console.log(userId, "//////.......///");
+    // console.log(total, "this is total..........");
+    // console.log(userId, "//////.......///");
     return new Promise((resolve, reject) => {
-      console.log(order, "this is order");
+      // console.log(order, "this is order");
       // console.log(order.flexRadioDefault, ":::LLLLLLLLLL:::::::::");
 
       const cartId = order.flexRadioDefault;
@@ -706,15 +706,20 @@ module.exports = {
           var cartAddress = user.address.find(
             (a) => a._id.toString() === cartId
           );
-
+            console.log(cartAddress,"aniiiiiiiiiiiiiruthhhhhhhhhhh");
           // console.log(carts,"this is carts");
           let status = order["paymentMethod"] === "COD" ? "placed" : "pending";
           db.order
             .create({
               deliveryDetails: {
+                name:cartAddress.name,
                 address: cartAddress.firstLine,
+                post:cartAddress.secondLine,
+                city:cartAddress.city,
                 mobile: cartAddress.contactNumber,
-                pincode: cartAddress.pincode,
+                pincode: cartAddress.pincode
+
+
               },
               userId: ObjectId(userId),
               paymentMethod: order["paymentMethod"],
@@ -904,4 +909,33 @@ module.exports = {
       console.log(resposne, "lllyyyuuuu");
     });
   },
+
+  postSort: (sortOption) => {
+    return new Promise(async (resolve, reject) => {
+      let products;
+      if (sortOption === 'price-low-to-high') {
+
+        products = await db.products.find().sort({ Price: 1 }).exec();
+      } else if (sortOption === 'price-high-to-low') {
+
+        products = await db.products.find().sort({ Price: -1 }).exec();
+      } else {
+        products = await db.products.find().exec();
+      }
+      resolve(products)
+    })
+
+  },
+
+  documentCount: () => {
+    return new Promise(async (resolve, reject) => {
+      await db.products.find().countDocuments().then((documents) => {
+
+        resolve(documents);
+      })
+    })
+  },
+
 };
+
+
