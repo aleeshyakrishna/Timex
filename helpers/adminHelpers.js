@@ -54,16 +54,18 @@ module.exports={
 
         })
     },
+
+    
    
     
-    postAddProduct: (userData,filename)=>{
+    postAddProduct: (userData,image)=>{
 
         return new Promise((resolve,reject)=>{
             uploadedImage= new db.products({
                 Productname:userData.name,
                 ProductDescription:userData.description,
                 Quantity:userData.quantity,
-                Image:filename,
+                Image:image,
                 category:userData.category,
                 Price:userData.Price
             })
@@ -77,6 +79,7 @@ module.exports={
         return new Promise(async(resolve,reject)=>{
             await db.products.find().exec().then((response)=>{
                 resolve(response)
+                // console.log(response,"hhhhhh");
             })
 
         })

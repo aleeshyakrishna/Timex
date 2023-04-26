@@ -5,7 +5,7 @@ const db = require("../model/connection");
 const ObjectId = require("mongodb").ObjectId;
 const mongoose = require("mongoose");
 const Razorpay = require("razorpay");
-const crypto=require("crypto")
+const crypto = require("crypto");
 
 var instance = new Razorpay({
   key_id: "rzp_test_D8YlCeAgArP4IA",
@@ -109,6 +109,23 @@ module.exports = {
         .then((response) => {
           resolve(response);
         });
+    });
+  },
+ 
+  categorySearch:(categoryId)=>{
+      return new Promise(async(resolve,reject)=>{
+        let cate= await db.category.find({_id:ObjectId(categoryId)})
+        resolve(cate)
+      })
+  },
+
+  getCat: (category) => {
+    return new Promise(async (resolve, reject) => {
+
+      
+      let cateProd= await db.products.find({category:category})
+      resolve(cateProd)
+      
     });
   },
 
@@ -242,20 +259,15 @@ module.exports = {
   getCartCount: async (userId) => {
     let count = 0;
     return new Promise(async (resolve, reject) => {
-      console.log(userId);
       let cart = await db.cart.findOne({ userid: userId });
-      console.log(cart);
       if (cart) {
         count = cart.products.length;
-        console.log(count);
       }
       resolve(count);
-      console.log(count);
     });
   },
 
   removeItem: (proId, userId) => {
-    
     return new Promise((resolve, reject) => {
       db.cart
         .updateOne(
@@ -264,7 +276,6 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
-          
         });
     });
   },
@@ -400,62 +411,63 @@ module.exports = {
       resolve();
     });
   },
-//kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+  //kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
   countCoupon: (user) => {
-  db.coupon.countDocuments({}, function (err, count) {
-  if (err) {
-    console.log(err);
-  } else {
-    const randomIndex = Math.floor(Math.random() * count);
-    
-    db.coupon.findOne().skip(randomIndex).exec(function (err, result) {
+    db.coupon.countDocuments({}, function (err, count) {
       if (err) {
         console.log(err);
+      } else {
+        const randomIndex = Math.floor(Math.random() * count);
+
+        db.coupon
+          .findOne()
+          .skip(randomIndex)
+          .exec(function (err, result) {
+            if (err) {
+              console.log(err);
+            }
+
+            const codeLength = 4;
+            const code = crypto
+              .randomBytes(codeLength)
+              .toString("hex")
+              .toUpperCase();
+            console.log(
+              code,
+              "this is crypto codeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            );
+
+            const createDate = Date.now();
+            let exp = new Date(createDate);
+            exp.setDate(exp.getDate() + 10);
+
+            let document = {
+              couponId: result._id,
+              userId: user,
+              couponCode: result.couponName,
+              discount: result.discount,
+              used: false,
+              code: code,
+              createDate: createDate.toLocaleString(),
+              exp: exp.toLocaleString(),
+            };
+
+            db.userCoupon.create({
+              couponId: result._id,
+              userId: user,
+              couponCode: result.couponName,
+              discount: result.discount,
+              used: false,
+              code: code,
+              createDate: createDate.toLocaleString(),
+              exp: exp.toLocaleString(),
+            });
+          });
       }
-
-    const codeLength = 4; 
-   const code = crypto.randomBytes(codeLength).toString('hex').toUpperCase();
-    console.log(code,"this is crypto codeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-
-
-  const createDate = Date.now()
-  let exp = new Date(createDate)
-  exp.setDate(exp.getDate()+ 10)
-
-
-    let document={
-      couponId:result._id,
-      userId:user,
-      couponCode:result.couponName,
-      discount:result.discount,
-      used:false,
-      code:code,
-      createDate : createDate.toLocaleString(),
-      exp:exp.toLocaleString()
-
-    }
-
-    db.userCoupon
-    .create({
-
-      couponId:result._id,
-      userId:user,
-      couponCode:result.couponName,
-      discount:result.discount,
-      used:false,
-      code:code,
-      createDate : createDate.toLocaleString(),
-      exp:exp.toLocaleString()
-      
-    })
     });
-  }
-});
-
-},
+  },
 
   getCartProductList: (userId) => {
-   
     return new Promise(async (resolve, reject) => {
       try {
         await db.cart
@@ -665,19 +677,18 @@ module.exports = {
     console.log(body);
 
     return new Promise(async (resolve, reject) => {
-
-        await db.wishlist.updateOne({ _id: body.wishlistId },
-            {
-                "$pull":
-
-                    { wishitems: { productId: body.productId } }
-            }).then(() => {
-                resolve({ removeProduct: true })
-            })
-
-
-    })
-},
+      await db.wishlist
+        .updateOne(
+          { _id: body.wishlistId },
+          {
+            $pull: { wishitems: { productId: body.productId } },
+          }
+        )
+        .then(() => {
+          resolve({ removeProduct: true });
+        });
+    });
+  },
 
   placeOrder: (order, carts, total, userId) => {
     console.log(total, "this is total..........");
@@ -724,8 +735,6 @@ module.exports = {
 
               resolve(response._id);
             });
-
-           
         });
     });
   },
@@ -770,71 +779,64 @@ module.exports = {
       let orders = await db.order.find({
         userId: mongoose.Types.ObjectId(userId),
       });
-      resolve(orders);
-      console.log(orders[0].deliveryDetails, "::::::::::::;");
-    
+      if (orders) {
+        resolve(orders);
+      } else {
+        res.render("/");
+      }
+      // console.log(orders[0].deliveryDetails, "::::::::::::;");
     });
   },
 
-  getUsercoupen:(user)=>{
-    return new Promise(async(resolve,reject)=>{
-      let coupenList=await db.userCoupon.find({
-        userId: ObjectId(user)});
-      resolve(coupenList)
-      console.log(coupenList,"this is the coupen listtttttttttttttt");
-    })
-      
-
+  getUsercoupen: (user) => {
+    return new Promise(async (resolve, reject) => {
+      let coupenList = await db.userCoupon.find({
+        userId: ObjectId(user),
+      });
+      resolve(coupenList);
+      console.log(coupenList, "this is the coupen listtttttttttttttt");
+    });
   },
 
-  
+  coupenValidate: (user, code, amount) => {
+    return new Promise(async (resolve, reject) => {
+      let result = await db.userCoupon.find({ userId: user, code: code });
+      console.log(result);
+      const moment = require("moment");
+      const currentDate = moment();
 
-    coupenValidate: (user, code,amount) => {
-     
-      return new Promise(async(resolve,reject)=>{
-        let result= await db.userCoupon.find({ userId: user, code: code });
-        console.log(result)
-        const moment = require('moment')
-        const currentDate = moment();
-       
-        const specifiedDate = moment(result[0].exp, 'DD/M/YYYY, h:mm:ss a');
-        if(!result){
-          resolve({
-            status:false,
-            Message:"Invalid coupon"
-          })
-        }
-        if(result[0].used){
-          resolve({
-            status:false,
-            Message:"Coupon is already used"
-          })
-        } else if (currentDate.isAfter(specifiedDate)){
-          resolve({
-            status:false,
-            Message:"Coupon is expired"
-          })
-        } else {
-
-          
-          
-          const discountPercentage = result[0]?.discount
-          const total = amount[0]?.totalRevenue;
-          const discountPrice = (total/100)*discountPercentage
-          const priceAfterDiscount = total-discountPrice
-          resolve({
-            status:true,
-            total,
-            discountPrice,
-            priceAfterDiscount,
-            Message:"Coupon applied successffully....!"
-          })
-
-          
-        };
-      })
-    },
-    
+      const specifiedDate = moment(result[0].exp, "DD/M/YYYY, h:mm:ss a");
+      if (!result) {
+        resolve({
+          status: false,
+          Message: "Invalid coupon",
+        });
+      }
+      if (result[0].used) {
+        resolve({
+          status: false,
+          Message: "Coupon is already used",
+        });
+      } else if (currentDate.isAfter(specifiedDate)) {
+        resolve({
+          status: false,
+          Message: "Coupon is expired",
+        });
+      } else {
+        const discountPercentage = result[0]?.discount;
+        const total = amount[0]?.totalRevenue;
+        const discountPrice = (total / 100) * discountPercentage;
+        const priceAfterDiscount = total - discountPrice;
+        resolve({
+          status: true,
+          total,
+          discountPrice,
+          priceAfterDiscount,
+          Message: "Coupon applied successffully....!",
+        });
+      }
+    });
+  },
 
   getUser: (userId) => {
     return new Promise(async (resolve, reject) => {
@@ -843,12 +845,11 @@ module.exports = {
     });
   },
 
-  validCoupens:(userId)=>{
-
-    return new Promise(async(resolve,reject)=>{
-      let validCoupens=await db.userCoupon.find({userId:userId})
-      resolve(validCoupens)
-    })
+  validCoupens: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let validCoupens = await db.userCoupon.find({ userId: userId });
+      resolve(validCoupens);
+    });
   },
 
   getOrderProducts: (orderId) => {
@@ -896,12 +897,11 @@ module.exports = {
     }
   },
 
-  getAddress:(user)=>{
-    return new Promise(async(resolve,reject)=>{
-      await db.user.find({_id:user})
-      resolve(response)
-      console.log(resposne,"lllyyyuuuu");
-    })
-
+  getAddress: (user) => {
+    return new Promise(async (resolve, reject) => {
+      await db.user.find({ _id: user });
+      resolve(response);
+      console.log(resposne, "lllyyyuuuu");
+    });
   },
 };

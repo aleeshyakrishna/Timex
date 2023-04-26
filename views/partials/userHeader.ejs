@@ -210,7 +210,10 @@
                       alt="Evara"
                       src="assets/imgs/theme/icons/icon-heart.svg"
                     />
-                    <span class="pro-count blue"><%= locals.wishcount%></span>
+                    <% if(locals.wishcount){%>
+                      <span class="pro-count blue"><%= locals.wishcount%></span>
+                      <%}
+                      %> 
                   </a>
                 </div>
 
@@ -220,7 +223,10 @@
                       alt="Evara"
                       src="assets/imgs/theme/icons/icon-cart.svg"
                     />
+                    <% if(locals.cartCount){%>
                     <span class="pro-count blue"><%=locals.cartCount%></span>
+                    <%}
+                    %> 
                   </a>
                   <!-- --<div class="cart-dropdown-wrap cart-dropdown-hm2">
                     <ul>

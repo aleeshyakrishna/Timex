@@ -9,7 +9,7 @@ const {ObjectID}=require('bson')
  const {ObjectId}=require("mongodb")
 
  const userschema= new mongoose.Schema({
-  
+
     username:{
         type:String,
         required: true,
@@ -91,7 +91,7 @@ const {ObjectID}=require('bson')
       type:Number
     },
     Image:{
-      type:String,
+      type:Array,
      
     },
     Price:{

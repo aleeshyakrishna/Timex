@@ -59,7 +59,7 @@
                 <% response.forEach(function(response,index) { %>
                 <tr>
                   <td><%=index+1 %> </td>
-                  <td><img src='/uploads/<%= response.Image %>' alt="" style="width:50px;height:50px";></td>
+                  <td><img src='/uploads/<%= response.Image[0] %>' alt="" style="width:50px;height:50px";></td>
                   <td>
                     <p><%=response.Productname%></p>
                     <small><%=response.ProductDescription%></small>

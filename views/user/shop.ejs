@@ -7,7 +7,22 @@
         
         <section class="mt-50 mb-50">
             <div class="container">
+                
                 <div class="row flex-row-reverse">
+                    <!-- filter -->
+                    <div class="col-lg-3 primary-sidebar sticky-sidebar">
+                        <div class="widget-category mb-30">
+                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
+                            <ul class="categories">
+                                <% cat.forEach(function(cat,index) { %>
+                                <li><a href="/category/<%=cat._id%>"><%=cat.CategoryName%></a></li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                        
+                        
+                    </div>
+
                     <div class="col-lg-9">
                        
                         <div class="row product-grid-3">
@@ -20,7 +35,7 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="/zoomView/<%= response._id %>">
-                                                <img class="default-img" src="/uploads/<%= response.Image %>" alt="">
+                                                <img class="default-img" src="/uploads/<%= response.Image[0] %>" alt="">
                                                 <!-- <img class="hover-img" src="assets/imgs/shop/product-7-1.jpg" alt=""> -->
                                             </a>
                                         </div>
@@ -84,18 +99,7 @@
                             </nav> -->
                         </div>
                     </div>
-                    <div class="col-lg-3 primary-sidebar sticky-sidebar">
-                        <div class="widget-category mb-30">
-                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
-                            <ul class="categories">
-                                <% cat.forEach(function(cat,index) { %>
-                                <li><a href=""><%=cat.CategoryName%></a></li>
-                                <% }) %>
-                            </ul>
-                        </div>
-                        
-                        
-                    </div>
+                    
                 </div>
             </div>
         </section>

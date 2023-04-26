@@ -35,7 +35,7 @@
                             <% products.forEach(function(product) { %>
 
                               <tr>
-                                  <td class="image product-thumbnail"><img src="/uploads/<%=product.proDetails[0].Image%>" alt="#"></td>
+                                  <td class="image product-thumbnail"><img src="/uploads/<%=product.proDetails[0].Image[0]%>" alt="#"></td>
                                   <td class="product-des product-name">
                                       <h5 class="product-name"><a href="#"><%=product.proDetails[0].Productname%></a></h5>
                                       <p class="font-xs"><%=product.proDetails[0].ProductDescription%>

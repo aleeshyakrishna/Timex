@@ -38,6 +38,10 @@
           </select>
           <label for="">Image</label>
           <input type="file" name="Image" class="form-control" />
+          <input type="file" name="Image" class="form-control" />
+          <input type="file" name="Image" class="form-control" />
+        
+
 
           <button type="submit" class="btn btn-success mt-4">Submit</button>
         </form>
@@ -72,19 +76,13 @@
     alert("Please enter a valid name!");
     return false;
   }
-  if (/[^a-zA-Z0-9]/.test(name)) {
-    alert("Error: name should not contain special characters.");
-    return false;
-  }
+ 
 
   if (!isNaN(description)) {
     alert("Please enter a valid discription!");
     return false;
   }
-  if (/[^a-zA-Z0-9]/.test(description)) {
-    alert("Error: description should not contain special characters.");
-    return false;
-  }
+ 
 
   if (isNaN(quantity)) {
     alert("Error: Price should be a number.");

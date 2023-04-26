@@ -1,32 +1,46 @@
 <section>
     <div class="container">
-      <table class="table mt-5" id="ordersTable">
-        <thead>
-          <tr>
-            <th scope="col">Order</th>
-            <th scope="col">Date</th>
-            <th scope="col">Payment</th>
-            <th scope="col">Status</th>
-            <th scope="col">Total</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-            <% response.forEach(function(response) { %>
-            <tr>
-              <td><%= response._id %></td>
-              <td><%= response.date %></td>
-              <td><%= response.paymentMethod %></td>
-              <td><%= response.status %></td>
-              <td>₹<%= response.totalAmount %></td>
-    
-              <td>
-                <a href="/view-order-products/<%=response._id %>" class="btn btn-primary">View</a>
-              </td>
-            </tr>
-            <% }) %>
-          </tbody>
-      </table>
+        <%if(response.length<1){%>
+            <div class="d-flex pb-2" style="justify-content: center; align-items: center;">
+                <img src="\assets\imgs\banner\noOreder.png" alt="">
+                </div> 
+                <div class="w-full"><a style="width: 10cm; margin-left: 13.5cm;
+                    margin-top: 2cm; padding-bottom: 1cm; border-color: green;" href="/cart" class="sc-iklJeh hbusih">GO TO CART</a></div>
+                <!-- <a href="/shop" style="width: 10cm; margin-left: 10cm;
+                margin-top: 2cm;" class="btn btn-outline-dark-2 btn-block mb-3"><i class="icon-refresh"></i>CONTINUE SHOPPING</a> -->
+            <%}
+            else{%>
+                <table class="table mt-5" id="ordersTable">
+                    <thead>
+                      <tr>
+                        <th scope="col">Order</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                        <% response.forEach(function(response) { %>
+                        <tr>
+                          <td><%= response._id %></td>
+                          <td><%= response.date %></td>
+                          <td><%= response.paymentMethod %></td>
+                          <td><%= response.status %></td>
+                          <td>₹<%= response.totalAmount %></td>
+                
+                          <td>
+                            <a href="/view-order-products/<%=response._id %>" class="btn btn-primary">View</a>
+                          </td>
+                        </tr>
+                        <% }) %>
+                      </tbody>
+                  </table>
+                <%}
+        %>
+      
     </div>
   </section>
 
@@ -122,8 +136,8 @@
                             </tbody>
                         </table>
                     </div>
-                </div> <!-- table-responsive end// -->
+                </div> table-responsive end// -->
             </div>
         </div>
     </div>
-</section> -->
+</section> 
