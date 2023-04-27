@@ -321,7 +321,7 @@
       typeof navigator !== 'undefined' && navigator.msMaxTouchPoints,
     isChrome:
       typeof navigator !== 'undefined' &&
-      /Chrome/i.test(navigator && navigator.userAgent),
+      /Chrome/i.test(navigator && navigator.userAgentData),
   };
 
   function updateGeometry(i) {

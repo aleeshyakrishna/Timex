@@ -43,18 +43,7 @@
                                             <figure class="border-radius-10">
                                                 <img class="default-img" src="/uploads/<%=response.Image[2] %>" alt="">
                                             </figure>
-                                            <!-- <figure class="border-radius-10">
-                                                <img class="default-img" src="/uploads/<%=response.Image[3] %>" alt="">
-                                            </figure> -->
-                                           <!-- <figure class="border-radius-10">
-                                                <img src="assets/imgs/shop/product-16-5.jpg" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="assets/imgs/shop/product-16-6.jpg" alt="product image">
-                                            </figure>
-                                            <figure class="border-radius-10">
-                                                <img src="assets/imgs/shop/product-16-7.jpg" alt="product image">
-                                            </figure> -->
+                                            
                                         </div>
                                         <!-- THUMBNAILS -->
                                         
@@ -69,15 +58,7 @@
                                        
                                     </div>
                                     <!-- End Gallery -->
-                                    <!-- <div class="social-icons single-share">
-                                        <ul class="text-grey-5 d-inline-block">
-                                            <li><strong class="mr-10">Share this:</strong></li>
-                                            <li class="social-facebook"><a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a></li>
-                                            <li class="social-twitter"> <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a></li>
-                                            <li class="social-instagram"><a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a></li>
-                                            <li class="social-linkedin"><a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a></li>
-                                        </ul>
-                                    </div> -->
+                                    
                                 </div>
                                 <div class="col-md-6 col-sm-12 col-xs-12">
                                     <div class="detail-info">
@@ -90,13 +71,7 @@
                                                         <%=response.ProductDescription%>
                                                     </a></span>
                                             </div>
-                                            <!-- <div class="product-rate-cover text-end">
-                                                <div class="product-rate d-inline-block">
-                                                    <div class="product-rating" style="width:90%">
-                                                    </div>
-                                                </div>
-                                                <span class="font-small ml-5 text-muted"> (25 reviews)</span>
-                                            </div> -->
+                                            
                                         </div>
                                         <div class="clearfix product-price-cover">
                                             <div class="product-price primary-color float-left">
@@ -155,21 +130,19 @@
                                                 <div class="product-extra-link2">
                                                     
                                                     <a type="button" href="/login"
-                                                    aria-label="Add To Cart"  class="action-btn hover-up "  style="width: 3cm; background-color: black; color: white;">Add to cart</a>
+                                                    aria-label="Add To Cart"  class="action-btn hover-up "  style="width: 6cm; background-color: black; color: white;">Add to cart</a>
                                                     <a aria-label="Add To Wishlist" class="action-btn hover-up"
                                                         href="/login"><i class="fi-rs-heart"></i></a>
-                                                    <a aria-label="Compare" class="action-btn hover-up"
-                                                        href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                    
                                                 </div>
                                                 <%}else{%>
                                                     <div class="product-extra-link2">
                                                     
-                                                        <a style="background-color: black; color: white;" type="submit" onclick="addToCart('<%= response._id %>')"
+                                                        <a style="background-color: black; width: 6cm; padding-bottom: 1cm; color: white;" type="submit" onclick="addToCart('<%= response._id %>')"
                                                             class="button button-add-to-cart">Add to cart</a>
-                                                        <a  class="action-btn hover-up" type="submit" onclick="addToWish('<%= response._id %>')"
+                                                        <a  style="padding-bottom: 1cm;" class="action-btn hover-up" type="submit" onclick="addToWish('<%= response._id %>')"
                                                             ><i class="fi-rs-heart"></i></a>
-                                                        <a aria-label="Compare" class="action-btn hover-up"
-                                                            href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                        
                                                     </div>
                                                     <%}
                                             %>

@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, "public/admin-assets")));
 app.use(session({secret:"key", resave: true,saveUninitialized: true,cookie:{maxAge:600000}}))
 
 
+
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
 
