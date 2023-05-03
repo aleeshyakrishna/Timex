@@ -1,32 +1,41 @@
+require('dotenv').config()
 const adminhelpers = require("../helpers/adminhelpers");
 const userhelpers = require("../helpers/userhelpers");
+const twilioApi = require('../api/twilio');
+
 const { category } = require("../model/connection");
+const {user} = require('../model/connection')
 
 var loginheader, loginStatus;
+
+// const accountSid = process.env.TWILIO_ACCOUNT_SID;
+// const authToken = process.env.TWILIO_AUTH_TOKEN;
+// const serviceSid = process.env.TWILIO_SERVICE_SID;
+// const client = require('twilio')(accountSid, authToken);
 
 module.exports = {
   getHome: async (req, res) => {
     let userId;
     if (req.session.userIn) {
-      // console.log(req.session.user, "kkkkkoiiiiiii");
-      userId = req.session.user._id;
-    }
-    if (loginStatus) {
+    // }
+    // if (loginStatus) {
+      let loginStatus=true;
       let user = req.session.user.username;
+      let userId = req.session.user._id;
+
+
+
       const cartCount = await userhelpers.getCartCount(userId);
       wishcount = await userhelpers.getWishCount(userId);
-      // console.log(wishcount, "this is count of wishlist");
       req.session.cartCount = cartCount;
-      if (cartCount) {
+    
         res.render("user/userhome", {
           loginheader: true,
           cartCount,
           wishcount,
           userName: user,
         });
-      } else {
-        res.render("user/userhome", { loginheader: true, userName: user });
-      }
+     
     } else {
       res.render("user/userhome", { loginheader: false });
     }
@@ -70,9 +79,9 @@ module.exports = {
   zoomshopView: (req, res) => {
     if (req.session.userIn) {
       let user = req.session.user.username;
-      let userId=req.session.user._id;
-      userhelpers.zoomlistProductShop(req.params.id).then(async(response) => {
-        let  wishcount = await userhelpers.getWishCount(userId);
+      let userId = req.session.user._id;
+      userhelpers.zoomlistProductShop(req.params.id).then(async (response) => {
+        let wishcount = await userhelpers.getWishCount(userId);
         let cartCount = await userhelpers.getCartCount(userId);
         res.render("user/imagezoom", {
           response,
@@ -96,8 +105,7 @@ module.exports = {
 
       userhelpers.listProductShop().then((response) => {
         adminhelpers.findAllcategories().then(async (cat) => {
-          // cartCount=req.session.cartCount
-          // console.log(response, "yyyyyaaaaaaaaaaaaaaayyyyyyyy");
+         
           let cartCount = await userhelpers.getCartCount(userId);
           wishcount = await userhelpers.getWishCount(userId);
           console.log(wishcount, "this is count of wishlist");
@@ -114,9 +122,7 @@ module.exports = {
     } else {
       userhelpers.listProductShop().then((response) => {
         adminhelpers.findAllcategories().then(async (cat) => {
-          // cartCount=req.session.cartCount
-          // let cartCount = await userhelpers.getCartCount(userId);
-          // console.log(cartCount + "[[[[[[[[[[=====");
+         
 
           res.render("user/shop", {
             response,
@@ -131,20 +137,18 @@ module.exports = {
   //now
 
   getCategory: async (req, res) => {
-    // console.log(req.params.id,"ooooooooooooooo");
     if (req.session.userIn) {
       let user = req.session.user.username;
       let userId = req.session.user._id;
       userhelpers.categorySearch(req.params.id).then((category) => {
         userhelpers.getCat(category[0].CategoryName).then((response) => {
           adminhelpers.findAllcategories().then(async (cat) => {
-            console.log(cat, "yyyyyyyyyyyyy");
             let cartCount = await userhelpers.getCartCount(userId);
-            console.log(cartCount + "[[[[[[[[[[=====");
+            let wishcount = await userhelpers.getWishCount(userId);
 
             res.render("user/shop", {
               response,
-              cat,
+              cat,wishcount,
               loginheader: true,
               cartCount,
               userName: user,
@@ -175,12 +179,12 @@ module.exports = {
   },
 
   postSignup: (req, res) => {
+    console.log(req.body,"this is req.body of signup  form");
     userhelpers.doSignUp(req.body).then((response) => {
       console.log(response);
       var emailStatus = response.status;
       if (emailStatus) {
-        //generate coupen
-        // res.redirect('/generateCoupon')
+        
         res.redirect("/login");
       } else {
         res.render("user/signup", { emailStatus });
@@ -202,54 +206,150 @@ module.exports = {
     res.redirect("/");
   },
 
+//newwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+  Otppage:(req,res)=>{
+    res.render('user/otpPage', {"otpLoginErr": req.session.userExistErr})
+    req.session.userExistErr = false;
+ },
+
+sendOtp : (req, res) =>{
+    req.session.mobile = req.body.mobile;
+    userhelpers.findUser(req.body.mobile).then((user) =>{
+        if(user){
+            req.session.user = user;
+            twilioApi.sendOtp(req.body.mobile).then((result) =>{
+                res.json({status : true});
+            })
+        }else{
+            req.session.userExistErr = "The mobile number is not registered with any account"
+            res.json({status : false})
+        }
+       
+    })
+
+},
+
+
+VerifyOtp: (req, res) => {
+  console.log(req.session.mobile, "this is mobile........");
+  console.log(req.body.otp, "this  is otp...........");
+
+  twilioApi.verifyOtp(req.session.mobile, req.body.otp)
+    .then(async(result) => {
+      if(result.valid){
+        const User = await user.findOne({phoneNumber:req.session.mobile})
+          console.log(User)
+          if(User){
+            req.session.userIn = User
+            return res.status(200).json('approved')
+          } 
+          res.status(400).json({error:true, message: 'user not found pleace create an account'})
+      }else{
+        req.session.otpErr = "Invalid otp.."
+        // res.redirect('/')
+      }
+    })
+    .catch((err) => {
+      console.log('err:',err);
+      // res.status(500).send({ message: "Error verifying OTP" });
+    });
+},
+
+//newwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+//  sandddddddddddeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeepppppppppppppppppppppppp
   //otp
 
-  showotp: (req, res) => {
-    res.render("user/otplogin");
-  },
-  postotp: (req, res) => {
-    userhelpers.otpverification(req.body).then((response) => {
-      if (response.blocked) {
-        loginStatus = false;
-        res.redirect("/otplogin");
-      } else {
-        req.session.userIn = true;
-        loginStatus = true;
-        res.redirect("/");
-      }
-    });
-  },
+  // showotp: (req, res) => {
+  //   res.render("user/otplogin");
+  // },
+  
+  // postotp: async (req, res) => {
+  //   const { mobile } = req.body;
+  //   req.session.mobile=mobile;
+  //   try {
+  //     console.log(mobile, req.body,"mobileeeeeeeee")
+  //     client.verify.v2.services(serviceSid)
+  //               .verifications
+  //               .create({to: `+91${mobile}`, channel: 'sms'})
+  //               .then(verification => res.status(200).json(verification.sid));
+      
+  //   } catch (error) {
+  //     res.status(500).json({ message: "Internal server error" });
+  //   }
+  // },
+
+  // verifyOtp:(req,res)=>{
+  //     res.render('user/verifyOtp')
+  // },
+
+
+//   postVerifyOtp: async (req, res) => {
+//     const {otp} = req.body
+//     let mobile=req.session.mobile;
+//   console.log(otp)
+//     try {
+//       client.verify.v2.services(serviceSid)
+//       .verificationChecks
+//       .create({to: `+91${mobile}`, code: otp})
+//       .then( async verification_check => {
+//         if(verification_check.status == 'approved'){
+//           console.log(verification_check.status)
+//           const User = await user.findOne({contactNumber:mobile})
+//           console.log(User)
+//           if(User){
+//             req.session.userIn = User
+//             return res.status(200).json({error:false, message: "succesfully logged in"})
+//           } 
+//           res.status(400).json({error:true, message: 'user not found pleace create and account'})
+//         } 
+//       });
+//     } catch (error) {
+//       res.status(500).json({ message: "Internal sever error occured" });
+//     }
+//   },
+
+
+// sandeeeeeeeeeeeeeeeeeeeeeeeeeeeeeddddddddddddddddddddddddddddddddddppppppppppppp
 
   //add-to-cart
   addToCart: (req, res) => {
-    if (req.session.userIn) {
+    try {
       const userId = req.session.user._id;
-      console.log(userId, "this is useriddddddddddddddddd");
-      const proId = req.params.id;
-      //console.log(proId,'llllllllll')
-      userhelpers.addToCarts(proId, userId).then(() => {
-        res.json({
-          status: "success",
-        });
+      const proId = req.params.id;      
+      userhelpers.addToCarts(proId, userId).then((data) => {
+        console.log(data,"pppppppppppppppppppppp");
+        res.json({ status: true});
+         
       });
-    } else {
-      console.log("nnnnnnnnnnnnoooooooooo");
-      res.render("user/login", { loginheader: false });
+    } catch (error) {
+      res.status(500)
     }
+     
+      
+   
   },
 
   getCartProducts: async (req, res) => {
     let user = req.session.user.username;
+    console.log(user,"ooooooi user");
     loginStatus = true;
-    let userId;
-    if (req.session.user) {
-      userId = req.session.user._id;
-    }
+   
+   
+     let userId = req.session.user._id;
+     console.log(userId,"oooooi id");
+    
     let products = await userhelpers.displayProducts(userId);
-    wishcount = await userhelpers.getWishCount(req.session.user._id);
+    console.log(products,"uuuuuuuuuuuuuuuuuuu");
+    wishcount = await userhelpers.getWishCount(userId);
     let cartCount = await userhelpers.getCartCount(userId);
-    // console.log(cartCount, "======");
-    if (cartCount) {
+
+    // console.log(products,"this is cart items");
+    // console.log(products[0].proDetails, "======");
+
+    
+   
       res.render("user/cart", {
         products,
         productExist: true,
@@ -258,28 +358,14 @@ module.exports = {
         loginheader: true,
         userName: user,
       });
-    } else {
-      res.render("user/cart", {
-        productExist: false,
-        loginheader: true,
-        userName: user,
-        products,
-      });
-    }
+   
+    
   },
 
   getWishlist: async (req, res) => {
-    if (req.session.userIn) {
-      console.log("hi this is productId");
-      console.log(req.params.id, "<<<<.....wishlistid......>");
-      console.log(req.session.user._id, "<<<<<.......userId......>>>>");
+    
 
-      // userhelpers.addToCarts(proId, userId).then(() => {
-      //   res.json({
-      //     status: "success",
-      //   });
-      // });
-
+     
       userhelpers
         .addToWishList(req.params.id, req.session.user._id)
         .then(() => {
@@ -287,7 +373,7 @@ module.exports = {
             status: "success",
           });
         });
-    }
+    
   },
 
   viewWishList: async (req, res) => {
@@ -299,7 +385,6 @@ module.exports = {
     await userhelpers
       .ListWishList(req.session.user._id)
       .then((wishlistItems) => {
-
         res.render("user/view-wishlist", {
           wishlistItems,
           wishcount,
@@ -311,9 +396,6 @@ module.exports = {
   },
 
   deleteWishList: async (req, res) => {
-    console.log("leeeeeeeeeeeeeleeeelee");
-    console.log(req.body, "leeeeeeeeeeeeeeeeeeeeeeeeeee");
-    console.log("lelelelelelellelelelle");
     try {
       await userhelpers.getDeleteWishList(req.body).then((response) => {
         res.json(response);
@@ -334,41 +416,53 @@ module.exports = {
         res.redirect("/cart");
       });
   },
+ 
+        
+  // changeQuantity: async (req, res) => {
+ 
+  //   let  userId = req.session.user._id;
+  //   let quantity=parseInt(req.body.quantity)
 
-  changeQuantity: async (req, res) => {
-    if (req.session.user) {
-      userId = req.session.user._id;
-    }
-    console.log(req.body.product, "000000000000000");
+  //   console.log(req.body,"body of change quantity..........");
 
-    let productDetails = await userhelpers.getOneProduct(req.body.product);
-    console.log(productDetails, "aleeeeeee");
-    if (productDetails.Quantity < req.body.quantity) {
-      res.json({ stock: "Full" });
-    } else {
-      let response = await userhelpers.change_Quantity(req.body);
-      let total = await userhelpers.getTotalAmount(userId);
-      let grandTotal = total[0].totalRevenue;
-      console.log("qqqqqqqqqqq", response, "qqqqqqqqqqqqqqqqq");
-      console.log("pppppppppppp", grandTotal, "pppppppppppppppppppppp");
+  //   let productDetails = await userhelpers.getOneProduct(req.body.product);
+  //   console.log(typeof(quantity));
+  //   console.log(productDetails.Quantity , "database quantity");
+  //   console.log(quantity,"cart quantity...");
+  //   if (productDetails.Quantity < quantity) {
+  //     res.json({ stock: "Full" });
+  //   } else {
+  //     let response = await userhelpers.change_Quantity(req.body);
+  //     let total = await userhelpers.getTotalAmount(userId);
+  //     let grandTotal = total[0].totalRevenue
 
-      // res.json(response,grandTotal)
-      // res.status(response).json(grandTotal);
-      res.status(200).json(grandTotal);
-    }
-  },
+      
+  //     res.status(200).json(grandTotal);
+  //   }
+  // },
+
+  changeQuantity: (req, res) => {
+
+
+    userhelpers.change_Quantity(req.body).then(async (response) => {
+        // response.total = await userhelpers.getsubTotal(req.session.user._id)
+        // console.log(response,"subtotal respoonse................");
+        res.json(response )
+
+    }).catch((error)=>{
+        res.status(500)
+       })
+    },
 
   placeOrder: (req, res) => {
-    if (req.session.user) {
-      userId = req.session.user._id;
-    }
+ 
+    let  userId = req.session.user._id;
+    
 
     userhelpers.getTotalAmount(userId).then(async (total) => {
-      // console.log(total, "///////////");
       const data = total;
 
       let value = data[0].totalRevenue;
-      // console.log(value, "......> total");
       let user = req.session.user.username;
 
       let cartCount = await userhelpers.getCartCount(userId);
@@ -379,8 +473,9 @@ module.exports = {
 
       let products = await userhelpers.displayProducts(userId);
 
-      console.log("iikkkkkkkkkkkkkkuuuu", userDetails.address);
-      //   value = total[0].totalRevenue;
+      let wishcount = await userhelpers.getWishCount(userId);
+
+
       res.render("user/checkout", {
         value,
         products,
@@ -389,28 +484,17 @@ module.exports = {
         user: userId,
         userName: user,
         address: userDetails.address,
-        coupons: coupens,
+        coupons: coupens,wishcount
       });
     });
   },
-  //----------
-  //   postPlaceOrder: async(req, res) => {
-  //     console.log(req.body,"??????????<<<<<<<<<?????");
-  //     let products = await userhelpers.cartOrder(req.body.userId);
-  //     console.log(products,'iiiiiiiiiiiiiiiiiiiiiiiiiiiii')
-  //     let totalPrice = await userhelpers.getTotalAmount(req.body.userId);
-  //     userhelpers.placeOrder(req.body, products, totalPrice).then((response)=>{
-  //         res.json({status:true})
-  //     })
-
-  //           },
+  
 
   postPlaceOrder: async (req, res) => {
     console.log(req.body, "this is req.body");
-    if (req.session.user) {
+   
       userId = req.session.user._id;
-    }
-    let carts = await userhelpers.getCartProductList(req.session.user._id);
+       let carts = await userhelpers.getCartProductList(req.session.user._id);
     let total = await userhelpers.getTotalAmount(userId);
     // userhelpers.coupenCheck()
 
@@ -421,6 +505,7 @@ module.exports = {
         if (req.body["paymentMethod"] == "COD") {
           res.json({ codstatus: true });
         } else {
+
           userhelpers.generateRazorpay(orderID, value).then((response) => {
             res.json(response);
           });
@@ -442,62 +527,53 @@ module.exports = {
       },
     };
 
-    // userhelpers.postAddresses(userId, newaddress).then((response) => {
-    //   req.session.address = newaddress.address;
-    //   let address = req.session.address;
-    //   // res.render("user/shop-checkout",{loginheader:true,address,response})
-    // });
+    
   },
 
   VerifyOrder: (req, res) => {
-    console.log(req.body, ":::;;;::::;;;;::::;;;;:::;;;::;;;:::::;;;;::");
 
     res.redirect("/user/order-success");
-    // res.json({
-    //   status: true
-    // })
+   
   },
 
   saveAddress: (req, res) => {
-    // console.log(req.body,"............>>>...........");
     const id = "id" + Math.random().toString(16).slice(2);
     userhelpers.saveaddress(req.session.user.email, req.body, id).then(() => {
       res.redirect("/checkout");
     });
   },
-  //coupeeeeeeeeeeeeeeeeen
-  getOrder: async(req, res) => {
-    // console.log("llllllllllll");
+  saveprofileAddress: (req, res) => {
+    const id = "id" + Math.random().toString(16).slice(2);
+    userhelpers.saveaddress(req.session.user.email, req.body, id).then(() => {
+      res.redirect("/profile");
+    });
+  },
+  getOrder: async (req, res) => {
 
     let userId = req.session.user._id;
     let user = req.session.user.username;
     let count = userhelpers.countCoupon(userId);
-    let  wishcount =await  userhelpers.getWishCount(req.session.user._id);
-    let cartCount = await  userhelpers.getCartCount(userId);
+    let wishcount = await userhelpers.getWishCount(req.session.user._id);
+    let cartCount = await userhelpers.getCartCount(userId);
     res.render("user/order-success", {
       loginheader: true,
       user: userId,
-      wishcount:wishcount,
-      cartCount:cartCount,
+      wishcount: wishcount,
+      cartCount: cartCount,
       userName: user,
     });
 
-    // const cartCount = await userhelpers.getCartCount(userId);
   },
 
-  //   viewOrder:(req,res)=>{
-  //     let userId=req.session._id;
-  //     res.render('user/orders',{loginheader:true,user:userId,})
-  //   },
+ 
 
   viewOrder: (req, res) => {
-    
-    let  userId = req.session.user._id;
-    
+    let userId = req.session.user._id;
+
     let user = req.session.user.username;
 
-    userhelpers.viewUserOrders(userId).then(async(response) => {
-     let  wishcount = await userhelpers.getWishCount(userId);
+    userhelpers.viewUserOrders(userId).then(async (response) => {
+      let wishcount = await userhelpers.getWishCount(userId);
       let cartCount = await userhelpers.getCartCount(userId);
 
       console.log(response, "this is new response...............");
@@ -517,14 +593,14 @@ module.exports = {
     let now = Date.now();
     let response = { success: false };
     let expiry = { success: false };
-    userhelpers.getUsercoupen(userId).then(async(coupenList) => {
+    userhelpers.getUsercoupen(userId).then(async (coupenList) => {
       if ((coupenList.used = false)) {
         response.success = true;
       }
       if (now < coupenList.exp) {
         expiry.success = true;
       }
-      let  wishcount = await userhelpers.getWishCount(userId);
+      let wishcount = await userhelpers.getWishCount(userId);
       let cartCount = await userhelpers.getCartCount(userId);
 
       res.render("user/view-coupens", {
@@ -539,7 +615,6 @@ module.exports = {
     });
   },
 
-  //here
 
   applyCoupon: async (req, res) => {
     let userId = req.session.user._id;
@@ -555,16 +630,17 @@ module.exports = {
   },
 
   getProfile: async (req, res) => {
-    console.log(".............>", req.session.user.address, "...........>");
     let userId = req.session.user._id;
-    let address = req.session.user.address;
-    userhelpers.viewUserOrders(userId).then(async(order) => {
-      // let address=order[0].deliveryDetails;
-      //     console.log(response, "this is new response..........");
+    
+    // console.log(address,"tjhiiiiiiiiiiiiis");
+    userhelpers.viewUserOrders(userId).then(async (order) => {
+      let details = await userhelpers.getAddress(userId);
       wishcount = await userhelpers.getWishCount(req.session.user._id);
       let cartCount = await userhelpers.getCartCount(userId);
       loginStatus = true;
       let user = req.session.user.username;
+      let address=details[0].address
+      console.log(details.address,wishcount,cartCount,user,"aaaaaaaaaaaaaaaaaaall in one");
       res.render("user/profile", {
         loginheader: true,
         userName: user,
@@ -576,30 +652,34 @@ module.exports = {
     });
   },
 
-  // postProfile:(req,res)=>{
-  //   let user=req.session.user.username;
-  //   let addressProfile=req.body;
-  //   console.log(req.body,"post address profile");
-
-  //   res.redirect('back')
-  //   // const id="id"+Math.random().toString(16).slice(2);
-  //   //   userhelpers.saveaddress(req.session.user.email,req.body,id).then(()=>{
-  //   //     res.redirect('/checkout')
-
-  // },
+  
 
   orderProducts: async (req, res) => {
-    let email=req.session.user.email;
-    // console.log(req.params.id, "?????");
+    let email = req.session.user.email;
+    let subTotal=await userhelpers.getsubTotal(req.session.user._id)
+
+    console.log(subTotal,"joyyyyyyyyyyyyy");
     let order = await userhelpers.getOrderProducts(req.params.id);
+    console.log(order[0].products,"ooreeeeeeeeeeeeeeer");
+    // for(let i=0;i<order[0].products[0].length;i++){
+    //   let sub=order[0].products[0].Price*order[0].products[0].Quantity
+    //   console.log(sub,"this is suuuuuuuuuuuuuuuuuuub");
+    // }
+   
+    
+
     let wishcount = await userhelpers.getWishCount(req.session.user._id);
-      let cartCount = await userhelpers.getCartCount(req.session.user._id);
+    let cartCount = await userhelpers.getCartCount(req.session.user._id);
     loginStatus = true;
     let user = req.session.user.username;
     res.render("user/view-order-products", {
-      loginheader: true,wishcount,cartCount,
+      loginheader: true,
+      wishcount,
+      cartCount,
       userName: user,
-      order,email
+      order,
+      email,
+      subTotal
     });
   },
 
@@ -615,19 +695,21 @@ module.exports = {
       res.json({ status: true });
     }
   },
-  
+
   postSort: async (req, res) => {
-    let sortOption = req.body['selectedValue'];
-    let viewCategory = await adminhelpers.viewAddCategory()
-    console.log(viewCategory,"hhhhhhhhhhhhhhhhhh");
-    userhelpers.postSort(sortOption).then(async(response) => {
+    let sortOption = req.body["selectedValue"];
+    let viewCategory = await adminhelpers.viewAddCategory();
+    userhelpers.postSort(sortOption).then(async (response) => {
       let wishcount = await userhelpers.getWishCount(req.session.user._id);
       let cartCount = await userhelpers.getCartCount(req.session.user._id);
       if (response) {
-
-        res.render('user/shop-new', { response, viewCategory, cartCount, wishcount })
+        res.render("user/shop-new", {
+          response,
+          viewCategory,
+          cartCount,
+          wishcount,
+        });
       }
-    })
+    });
   },
-
 };

@@ -6,6 +6,64 @@ const { ObjectId } = require('mongodb')
 
 module.exports={ 
 
+  categoryGroup:(req,res)=>{
+      return new Promise(async(resolve,reject)=>{
+          await db.order.aggregate(
+            [
+              {
+                $match: {
+                  status: 'Delivered'
+                }
+              }, {
+                $unwind: {
+                  path: '$products', 
+                  includeArrayIndex: 'string'
+                }
+              }, {
+                $group: {
+                  _id: '$products.Category', 
+                  categoryGroup: {
+                    $sum: 1
+                  }
+                }
+              }
+            ]
+          ).then((response)=>{
+            resolve(response)
+
+          })
+      })
+  },
+
+  findRevenue:(req,res)=>{
+    return new Promise(async(resolve,reject)=>{
+        await db.order.aggregate([
+          {
+            $match: {
+              status:'Delivered'
+            }
+          },{
+            $group: {
+              _id: '$totalAmount',
+              revenue: {
+                $sum: 1
+              }
+            }
+          }
+        ]).then((response)=>{
+
+          // const revenueSum = response.reduce((acc, curr) => acc + curr.revenue, 0);
+          const idSum = response.reduce((acc, curr) => acc + parseInt(curr._id), 0);
+
+
+          console.log(idSum,"888888888888888");
+          // console.log(response,"999999999999999");
+          resolve(idSum)
+
+        })
+    })
+  },
+
     listUsers:()=>{
         let userData=[]
         return new Promise(async(resolve,reject)=>{

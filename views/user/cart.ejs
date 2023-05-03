@@ -6,11 +6,7 @@
               <div class="col-12">
                   <div class="table-responsive"> 
                     <% if(products.length==0){%>
-                      <!-- <div  class="d-flex justify-content-center">
-                       
-                        <img style="width: 100%;" src="C:\Users\hp\Downloads\Project 8\Project 8\public\assets\imgs\banner\empty-cart.png" alt="" />
-                        
-                      </div>  -->
+                      
                       <div class="d-flex pb-2" style="justify-content: center; align-items: center;">
                         <img src="\assets\imgs\banner\empty-cart.png" alt="">
                         </div> 
@@ -45,12 +41,13 @@
                                   <td class="text-center" data-title="Stock">
                                       <div class="detail-qty border radius  m-auto">
                                       
+                                          
+                                            <a  class="qty-up" onclick="cartQuantity('<%= product._id %>','<%= product.proDetails[0]._id%>','<%= product.proDetails[0].Price %>',1)">
+                                              <i class="fi-rs-angle-small-up"></i></a>
+                                          <p id="qty<%= product.proDetails[0]._id%>"><%= product.products.quantity %></p>
                                           <a class="qty-down" onclick="cartQuantity('<%= product._id %>','<%= product.proDetails[0]._id%>','<%= product.proDetails[0].Price %>',-1)">
-                                            <i class="fi-rs-angle-small-down"></i></a>  
-                                        
-                                          <span id="qty<%= product.proDetails[0]._id%>"><%= product.products.quantity %></span>
-                                          <a  class="qty-up" onclick="cartQuantity('<%= product._id %>','<%= product.proDetails[0]._id%>','<%= product.proDetails[0].Price %>',1)">
-                                            <i class="fi-rs-angle-small-up"></i></a>
+                                            <i class="fi-rs-angle-small-down"></i></a> 
+                                          
                                           
                                       </div>
                                           
@@ -179,56 +176,72 @@ function removeItem(prodId) {
   }
 
 function cartQuantity(cartId, prodId, Price, count) {
-  console.log(cartId, prodId, Price, count + 'uuuuuuu');
-  // let quantity = parseInt(document.getElementById('qty' + prodId).innerText)
-  let quantity=parseInt(document.getElementById('qty'+prodId).innerText)
+  // console.log(cartId,"-->cartid", prodId,"-->prodid", Price,"-->price", count ,"-->count" );
+  let quantity = parseInt(document.getElementById('qty'+ prodId).innerText)
 
-  const totalQuantity = (parseInt(count )+ quantity)
-  // const subTotal = parseInt(totalQuantity * Price)
-  const subTotal=parseInt(totalQuantity*parseFloat(Price))
+  console.log(quantity, typeof(quantity),"pppppp");
+  console.log(count,"this is count....")
 
-  console.log(subTotal)
-  document.getElementById(prodId + '-subtotal').innerHTML = subTotal
+  let totalQunat=quantity+count;
 
-  if (isNaN(quantity)) {
-    console.log('Invalid quant value');
-    return;
-  }else if(isNaN(totalQuantity)){
-    console.log('invalid total quant');
-  }else if(isNaN(subTotal)){
-    console.log('invalid subtotal');
-  }else{
-    console.log('okkay');
-  }
 
+  let price=parseInt(Price);
+
+  let subTot=price*totalQunat;
+
+  
   $.ajax({
     url: '/change-product-quantity',
+    method: 'post',
     data: {
       cart: cartId,
       product: prodId,
       count: count,
+      // userId:userId,
       quantity: quantity,
-      price: Price
-    },
-    method: 'post',
-    success: (response, grandTotal) => {
-      
-      console.log(grandTotal, 'llllllllllllllllkkk')
-      // document.getElementById('total').innerHTML = parseInt(grandTotal)
+      // price: Price
+    }, 
+    success: (response) => {
 
-      // if (response.stock == 'Full') {
-      //   console.log('out of stock');
-      // }  else if aan rhaazhe 
-      if (response.removeProduct) {
+      if (response.stock == 'Full') {
+        console.log('out of stock');
 
-        alert('product removed ')
-        location.reload()
-      } else {
-        console.log(quantity + count);
-        document.getElementById('qty' + prodId).innerText =totalQuantity
+      }else{
+
+        if (response.removeProduct) {
+          setTimeout(function() {
+            swal(
+              'Deleted!',
+              'Product removed from cart!.',
+              'success'
+            );
+            location.reload()
+          }, 6000); // 6 second delay
+          location.reload()
+        } 
+        else {
+          document.getElementById('qty' + prodId).innerText = quantity + count
+          let totalCount=quantity + count
+
+          // console.log(price,totalCount,"oioioio");
+          document.getElementById(prodId+'-subtotal').innerText=price*totalCount
+          //total is not defneed
+          // document.getElementById('prodId+'-subtotal').innerText = response.total[0].result
+          // console.log(totalQuantity);
+          // const totQuant = totalQuantity.toString()
+          // console.log(typeof(totQuant));
+
+          // $(`#qty-${prodId}`).html(totQuant)
+
+          if (quantity + count < 2) {
+                      document.querySelector(`#${prodId} .btn-minus`).classList.add('d-none')
+          } else {
+                        document.querySelector(`#${prodId} .btn-minus`).classList.remove('d-none')
+                  }
+        }
       }
-
-    }
+        
+      }
   })
 }
 

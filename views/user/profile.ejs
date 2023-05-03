@@ -117,7 +117,7 @@
                             
                               <% for (var i = 0; i < address.length; i++) { %>
 
-                               <p> <%= address[i] %></p>
+                               <!-- <p> <%= address[i] %></p> -->
                               <div class="card" >
                                 <div class="div1 card-body">
                                   
@@ -153,60 +153,74 @@
                         </div>
 
                         <div id="collapseAddress" class="different_address collapse in">
-                          <form action="/profile-address" method="post" id="address">
+                          <form action="/address-profile" method="post" id="address">
             
-                            <div class="form-group">
-                              <label for="name">First Name *</label>
-                              <input type="text" name="name" id="name" placeholder="Enter your first name"
-                                onblur="namecheck()" required>
-                              <label id="nmlabel" for="name" style="display: none; color:red;">This field is
-                                required</label>
-                              <label id="nmlabel-01" for="name" style="display: none; color:red;">Name doesn't start
-                                with a number</label>
-                              <label id="nmlabel-02" for="name" style="display: none; color:red;">Name doesn't contain
-                                special characters</label>
-                            </div>
-                            <div class="form-group">
-                              <label for="phone">Phone *</label>
-                              <input type="tel" name="phone" id="phone"  placeholder="Enter your phone number"
-                                onblur="phonecheck()" required>
-                              <label id="ml" for="phone" style="display: none; color:red;">This field is
-                                required</label>
-                              <label id="ml-01" for="phone" style="display: none; color:red;">Minimum 10
-                                digits required</label>
-  
-                            </div>
-                            <div class="form-group">
-                              <label for="address">Address *</label>
-                              <input type="text" name="billing_address" id="address"   placeholder="Enter your address"  onblur="addresscheck()" required>
-                              <label id="adlabel" for="address" style="display: none; color:red;">This field is
-                                required</label>
-                              <label id="adlabel-01" for="address" style="display: none; color:red;">Address doesn't start
-                                with a number</label>
-                              <label id="adlabel-02" for="address" style="display: none; color:red;">Address doesn't contain
-                                special characters</label>
-  
-                            </div>
-                            <div class="form-group">
-                              <label for="address2">Address Line 2</label>
-                              <input type="text" name="billing_address2" id="address2"
-                                placeholder="Enter your address line 2">
-                            </div>
-                            <div class="form-group">
-                              <label for="city">City/Town *</label>
-                              <input type="text" name="city" id="city" required placeholder="Enter your city/town">
-  
-                            </div>
-                            <div class="form-group">
-                              <label for="state">State/County *</label>
-                              <input type="text" name="state" id="state" required placeholder="Enter your state/county">
-  
-                            </div>
-                            <div class="form-group">
-                              <label for="zipcode">Postcode/ZIP *</label>
-                              <input type="text" name="zipcode" id="zipcode" required
-                                placeholder="Enter your postcode/ZIP">
-  
+                            <div class="modal-body">
+                              <div class="form-group">
+                    
+                                <input type="text" required="" name="name" id="name" placeholder="Name *">
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
+                    
+                              <div class="form-group">
+                    
+                                <input type="text" name="firstLine" id="firstLine" required="" placeholder="Address *">
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
+                    
+                              <div class="form-group">
+                    
+                                <input type="text" name="secondLine" id="secondLine" required="" placeholder="post*">
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
+                    
+                              <div class="form-group">
+                    
+                                <input required="" type="text" name="city" id="city" placeholder="City / Town *">
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
+                    
+                              <div class="form-group">
+                    
+                                <input required="" type="text" name="state" id="state" placeholder="State *">
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
+                    
+                              <div class="form-group">
+                    
+                                <input required="" type="text" name="pincode" id="pincode" placeholder="Postcode / ZIP *">
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
+                    
+                              <div class="form-group">
+                    
+                                <input required="" type="text" name="contactNumber" id="contactNumber" placeholder="Phone *">
+                    
+                                <input name="user"  type="hidden" />
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
+                    
+                              <div class="form-group">
+                    
+                                <input required="" type="text" name="email" id="email" placeholder="Email address *">
+                    
+                                <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+                    
+                              </div>
                             </div>
                             <button type="submit" class="btn btn-success mt-4">Submit</button>
                           </form>

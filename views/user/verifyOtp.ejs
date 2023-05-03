@@ -1,0 +1,146 @@
+<section class="vh-100 gradient-custom" style="background-color: whitesmoke; ">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                    <div class="card-body pl-5 pr-5 text-center" style="background-color: white;">
+
+                        <div class="mb-md-5 mt-md-4 pb-3">
+
+                            <h2 class="fw-bold mb-2 text-uppercase">Sign in</h2>
+
+
+
+
+
+
+
+                            <label class="form-label" id="errorLoginPassword"></label>
+
+                            <div id="verifier" style="display:none;">
+                                <div class="form-outline form-white mb-4">
+                                    <input style="width:8rem;margin:0 auto;" id="OtpField"
+                                        class="form-control form-control-lg" placeholder="Enter otp" />
+                                </div>
+
+                                <!-- <div>
+                    <button class="btn btn-primary mb-2" >Verify</button>
+                  </div> -->
+                            </div>
+
+                            <form action="/verifyOtp" method="post" role="form"
+                                enctype="application/x-www-form-urlencoded">
+
+                                <input id="mobileNum" name="mobile" hidden>
+
+                                <div id="verified" style="display:none;margin-top:2rem"> Number Verified</div>
+                                <div id="unVerified" style="display:none;margin-top:2rem"> Wrong otp</div>
+
+                                <button class="btn btn-outline-light btn-lg m-auto" id="signInBtn" type="submit"
+                                    style="display:none;">Sign in</button>
+
+                            </form>
+
+                            <div>
+
+                                <div>
+                                    <a class="ms-5" href="/signup">New ? Create An Account</a>
+                                </div>
+
+
+                            </div>
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#exampleModal">
+                                verify
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="form">
+                <form id="verify-otp">
+
+                    <div class="userInput">
+                        <input type="text" name="otp" id='ist' maxlength="6">
+
+                    </div>
+                    <button type="submit" class="btn btn-primary">CONFIRM</button>
+            </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">verify otp</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/verifyOtp" method="post">
+
+                    <div class="modal-body">
+
+
+                        <div class="form-group">
+
+                            <input type="text" name="otp" id="" required="" placeholder="otp *">
+
+                            <p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
+
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">verify</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+<script>
+
+    $(document).ready(function () {
+
+        // verifying the otp to the provided mobile number
+
+        $('#verifyOtp').submit(function (e) {
+            e.preventDefault()
+
+            $.ajax({
+                url: '/verifyOtp',
+                type: 'post',
+                data: $('#verifyOtp').serialize()
+            }).done(res => {
+                console.log(res)
+                console.log('success')
+                location.reload()
+
+
+            }).fail(err => {
+                console.log(err)
+                console.log('failed')
+            })
+        })
+
+    })
+</script>

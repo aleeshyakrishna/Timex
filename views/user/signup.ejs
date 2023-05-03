@@ -33,10 +33,11 @@
                 
                     %>
                     
-                  <form  action="/signup" method="post">
-                    <div class="form-group">
+                  <form id="signUp" onsubmit="validateSignup(event)" action="/signup" method="post">
+                    <div class="form-group" >
                     
                       <input
+                      id="username"
                         type="text"
                         required=""
                         name="username"
@@ -47,36 +48,43 @@
                     </div>
                     <div class="form-group">
                       <input
-                        type="text"
+                        type="email"
                         required=""
                         name="email"
                         placeholder="Email"
                       />
                     </div>
+                        <p id="phone-error" style="color: red;"></p>
+
                     <div class="form-group">
                       <input
+                      id="mobile"
                         type="text"
                         required=""
                         name="phonenumber"
                         placeholder="Phone Number"
                       />
                     </div>
+                    <p id="pass-error" style="color: red;"></p>
                     <div class="form-group">
                       <input
+                      id="pass"
                         required=""
-                        type="password"
                         name="password"
+
+                        type="password"
                         placeholder="Password"
                       />
                     </div>
-                    <!-- <div class="form-group">
+                    <p id="passConfirm" style="color: red;"></p>
+                    <div class="form-group">
                       <input
+                      id="passconfm"
                         required=""
                         type="password"
-                        name="password"
                         placeholder="Confirm password"
                       />
-                    </div> -->
+                    </div>
                     <div class="login_footer form-group">
                       <div class="chek-form">
                         <div class="custome-checkbox">
@@ -96,11 +104,11 @@
                         
                     </div>
                     <div class="form-group d-flex justify-content-center">
-                      <button
+                      <button 
                         type="submit"
                         class="btn btn-fill-out btn-block hover-up"
                          
-                        href="/login"
+                        href=""
                       >
                        REGISTER
                       </button>
@@ -136,3 +144,63 @@
   </section>
   </main>
   
+  <script>
+   function validateSignup(event) {
+    event.preventDefault();
+  var password = document.getElementById("pass").value;
+  var passError = document.getElementById("pass-error");
+  var passConfm = document.getElementById("passconfm").value;
+
+  var mobile=document.getElementById("mobile").value
+  var phoneErr=document.getElementById("phone-error");
+
+  var form = document.getElementById("signUp");
+
+  passError.textContent = "";
+  passConfm.textContent=''
+  
+  console.log(mobile,"this is mobile....");
+// if(mobile.lenth>11 && mobile.length<10){
+//   phoneErr.textContent="enter valid 10 digit mobile number"
+// }
+
+
+  
+ 
+  // Check if password is at least 8 characters long
+  if (password.length < 8) {
+    passError.textContent = "Password must be at least 8 characters long.";
+    return false;
+  }
+  
+  // Check if the first letter is uppercase
+  if (!/^[A-Z]/.test(password)) {
+    passError.textContent = "Password must start with an uppercase letter.";
+    return false;
+  }
+  
+  // Check if password contains at least 2 special characters
+  var specialCharCount = 0;
+  for (var i = 0; i < password.length; i++) {
+    if (/[^A-Za-z0-9]/.test(password.charAt(i))) {
+      specialCharCount++;
+    }
+  }
+  if (specialCharCount < 1) {
+    passError.textContent = "Password must contain at least 1 special characters.";
+    return false;
+  }
+
+  if(password!=passConfm){
+  passConfirm.textContent="entered password does not match!"
+  return false;
+}
+  
+  // // If all checks pass, return true to submit the form
+  form.submit()
+  return true;
+}
+
+
+
+  </script>

@@ -1,3 +1,4 @@
+const { json } = require("express");
 const { response } = require("../app");
 const adminHelper = require("../helpers/adminHelpers");
 const userhelpers = require("../helpers/userhelpers");
@@ -12,13 +13,36 @@ const adminCredential = {
 let adminStatus;
 
 module.exports = {
-  displayDashboard: (req, res) => {
+  displayDashboard:async (req, res) => {
+    
+
+    let arrayCate=[]
+    let arrayCount=[]
+
     let check = req.session.admin;
     if (adminStatus) {
+
+    const catGroup= await adminHelper.categoryGroup()
+
+      for(let i=0;i<catGroup.length;i++){
+
+        arrayCate[i]=catGroup[i]._id
+        arrayCount[i]=catGroup[i].categoryGroup
+
+      }
+
+      const orderCount=await userhelpers.orderCount();
+      const documentCount = await userhelpers.documentCount()
+      const catCount= await userhelpers.categoryCount()
+
+//revenuw
+  const totalRevenue=await adminHelper.findRevenue()  
+  
+  
       res.render("admin/admin-dash", {
         layout: "adminLayout",
-        check,
-        adminStatus,
+        check,documentCount,arrayCate,arrayCount,
+        adminStatus,catCount,orderCount,totalRevenue
       });
     } else {
       res.redirect("/admin/login");

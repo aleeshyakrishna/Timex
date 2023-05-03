@@ -427,7 +427,7 @@
 
 						<input required="" type="text" name="contactNumber" id="contactNumber" placeholder="Phone *">
 
-						<input name="user" value="<%= userId%>" type="hidden" />
+						<input name="user" value="<%= user%>" type="hidden" />
 
 						<p class="d-flex w-75 justify-content-start" style="color: rgb(230, 43, 40);"></p>
 
@@ -519,6 +519,7 @@
 
 
 	function rezorparyPayment(order) {
+
 		var options = {
 			"key": "rzp_test_D8YlCeAgArP4IA", // Enter the Key ID generated from the Dashboard
 			"amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise

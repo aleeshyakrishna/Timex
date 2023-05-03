@@ -36,18 +36,14 @@
                                 </option>
                               </select>
                             </div>
-                          </form>
-                        
+                          </form>                      
                     </div>
-
                     <div class="col-lg-9">
                        
                         <div class="row product-grid-3">
                             <% response.forEach(function(response,index) { %>
                            
                             <div class="col-lg-4 col-md-4 col-12 col-sm-6">
-
-
                                 <div class="product-cart-wrap mb-30">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
@@ -57,10 +53,9 @@
                                             </a>
                                         </div>
                                         <div class="product-action-1">
-                                            <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-<i class="fi-rs-search"></i></a>
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                            <a aria-label="Quick view" href="/zoomView/<%= response._id %>" class="action-btn hover-up" >
+                                            <i class="fi-rs-search"></i></a>
+                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" onclick="addToWish('<%= response._id %>')"><i class="fi-rs-heart"></i></a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
                                             
@@ -71,49 +66,16 @@
                                             <a href="/shop-product"><%=response.category%></a>
                                         </div>
                                         <h2><a href="/shop-product"><%=response.Productname%></a></h2>
-                                        <!-- <div class="rating-result" title="90%">
-                                            <span>
-                                                <span>95%</span>
-                                            </span>
-                                        </div> -->
+                                       
                                         <div class="product-price">
                                             <span>₹ <%=response.Price%></span>
-
-                                            
-                                               
-                                             
-                                        
                                         </div >
 
-                                        
-                                           
-                                         
-
-                                        <!-- <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart"  class="action-btn hover-up " 
-                                                onclick="addToCart('<%= response._id %>')" type="submit" 
-                                                style="background-color: whitesmoke; padding-right: 2cm;">
-                                                <i class="fi-rs-shopping-bag-add" style="color: black;"></i>
-                                            </a>
-                                         
-                                        </div> -->
                                     </div>
                                 </div>
                             </div>
                              <% }) %>
                         </div>
-                        <!--pagination-->
-                        <!-- <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-start">
-                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                    <li class="page-item"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>
-                                </ul>
-                            </nav> -->
                         </div>
                     </div>
                     
@@ -136,28 +98,18 @@
                 </nav>
               </div>
         </section>
-    </main>
-
-    
-    
+    </main>    
 </body>
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-grid-left.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:26:43 GMT -->
 </html>
 
 <script>
     function addToCart(proId) {
-        // console.log("api vall");
         console.log(proId);
         $.ajax ({
             url: `/add-to-cart/${proId}`,
             method: 'get',
             success: (response) => {
-                // console.log(response);
                 if(response.status) {
-                    // alert(response)
-                    // location.reload();
                     Toastify({
                         text: "ADDED TO YOUR CART",
                         duration: 3000,
@@ -172,5 +124,34 @@
             }
         })
     }
+
+
+    function addToWish(proId) {
+            // console.log("api vall");
+            console.log(proId,"llllll");
+            
+            $.ajax ({
+                url: `/wishlist/${proId}`,
+                method: 'get',
+                success: (response) => {
+                   
+                    console.log(response);
+                    if(response.status) {
+                        // alert("wowww")
+                        // location.reload();
+                        Toastify({
+                            text: "ADDED TO YOUR WISHLIST",
+                            duration: 3000,
+                            gravity: "bottom",
+                            position: "center",
+                            style: {
+                                background: "linear-gradient(to right, #00b09b, #96c93d)",
+                            }
+                            }).showToast();
+                           
+                    }
+                }
+            })
+        }
     
 </script>

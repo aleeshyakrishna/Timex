@@ -28,15 +28,33 @@ router.get('/category/:id',controller.getCategory)
 
 router.get('/logout',controller.userlogout)
 
-router.get('/otplogin',controller.showotp)
+//newwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-router.post('/sendOtp',controller.postotp)
+router.get('/otp',controller.Otppage) //otp page kittaan
+router.post('/send-otp',controller.sendOtp);//
+router.post('/verify-otp',controller.VerifyOtp);
 
-router.get('/zoomView/:id',controller.zoomshopView)
+//newwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+//sandeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
+// router.get('/otplogin',controller.showotp)
+
+// router.post('/sendOtp',controller.postotp)
+
+// router.get('/verifyOtp',controller.verifyOtp)
+
+// router.post('/verifyOtp',controller.postVerifyOtp)
+
+//sandeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
+router.get('/zoomView/:id',controller.zoomshopView)         
 
 router.get('/add-to-cart/:id',controller.addToCart)
 
 router.get('/cart',authentication.userAuth,controller.getCartProducts)
+
+router.post('/change-product-quantity',authentication.userAuth,controller.changeQuantity) 
 
 router.get('/delete-cart-product/:id',authentication.userAuth,controller. deleteCartProduct)
 
@@ -48,7 +66,6 @@ router.delete('/delete_wishlist',authentication.userAuth, controller.deleteWishL
 
 // router.get('/get-Wishlist-products',authentication.userAuth,controller.getWishlistProducts)
 
-router.post('/change-product-quantity',authentication.userAuth,controller.changeQuantity) 
 
 router.get('/checkout',authentication.userAuth,controller.placeOrder)
 
@@ -77,6 +94,8 @@ router.get('/profile',authentication.userAuth,controller.getProfile)
 // router.post('/profile-address',authentication.userAuth,controller.postProfile)
 
 router.post('/address',authentication.userAuth,controller.saveAddress)
+
+router.post('/address-profile',authentication.userAuth,controller.saveprofileAddress)
 
 router.get('/view-order-products/:id',authentication.userAuth,controller.orderProducts)
 
