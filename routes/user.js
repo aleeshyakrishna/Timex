@@ -103,6 +103,11 @@ router.post('/order-cancel/:id',authentication.userAuth,controller.cancelOrder)
 
 router.post('/sort', authentication.userAuth, controller.postSort)
 
+//search_routes
+router.get('/search', controller.search);
+
+router.get('/searchEmpty',controller.searchempty)
+
 
 
 

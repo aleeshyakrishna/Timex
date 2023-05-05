@@ -39,7 +39,7 @@
 <div class="d-flex justify-content-center align-items-center container" >
     <div class="card py-5 px-3">
     
-    
+            <p id="otpInvalid" style="color: red;"></p>
         <div class="d-flex flex-row mt-5" style="width: 15cm; height: -29cm;">
             <form id="send-otp" action="" style="padding-left: 17%;">
               <label for="" style="font-family: sans-serif; color: #666;
@@ -132,9 +132,11 @@ $("#verify-otp").submit((e) => {
     method: "post",
     data: $("#verify-otp").serialize(),
     success: (result) => {
-      console.log(result, "o0");
+      console.log(result,Invaliderr,error, "000000000000");
       if (result === "approved") {
         location.href = "/";
+      }else if(Invaliderr){
+        document.getElementById("otpInvalid")=" you entered invalid otp"
       }
     },
     error: (xhr, status, error) => {

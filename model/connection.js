@@ -1,5 +1,7 @@
 var mongoose = require("mongoose");
-const db =mongoose .connect("mongodb://0.0.0.0:27017/ecommerce", {
+mongoose.set('strictQuery',false);
+
+const db =mongoose .connect("mongodb+srv://aleeshyakrishnamv:yV5aVykYgUlIlNRu@cluster0.pfoqvky.mongodb.net/test", {
         useNewUrlParser: true,
         useUnifiedTopology: true })   
  .then(() => console.log("Database connected!"))

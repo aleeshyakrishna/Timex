@@ -264,10 +264,16 @@ module.exports = {
                 ],
               },
             },
-          },
-        ]);
+           
+          // },{
 
-        console.log(cartItems, "llllllllllllllllllllllllllllllllllllllllll");
+          //   $unwind: {
+          //     path: '$proDetails',
+          //     includeArrayIndex: 'string',
+             
+          //   }
+          }
+        ]);
         resolve(cartItems);
       } catch {
         resolve(null);
@@ -875,9 +881,7 @@ getsubTotal: (userId) => {
         if (err) {
           console.log(err);
         } else {
-          console.log("New order:", order);
           resolve(order);
-          console.log("finish");
         }
       });
     });
@@ -1052,6 +1056,24 @@ getsubTotal: (userId) => {
       })
     })
   },
+
+  search: (details) => {
+    console.log(details,"inside the helper function search");
+    return new Promise(async(resolve, reject) => {
+      try {
+        const searchValue = details.search;
+        let Products = await db.products.find({
+          'Productname': { $regex: `.*${searchValue}.*`, $options: 'i' }
+        });
+       
+        resolve(Products);
+        // console.log(Products,"oioioioiuhgfghnbvv");
+      } catch (err) {
+        console.error(err);
+        reject(err);
+      }
+    });
+  }
 
   
 

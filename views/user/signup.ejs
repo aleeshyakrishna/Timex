@@ -55,15 +55,16 @@
                       />
                     </div>
                         <p id="phone-error" style="color: red;"></p>
-
-                    <div class="form-group">
-                      <input
+                       
+                    <div class="form-group" >
+                      <input required pattern="[0-9]{10}" title="Please enter a 10 digit phone number"
                       id="mobile"
                         type="text"
                         required=""
                         name="phonenumber"
                         placeholder="Phone Number"
                       />
+                      <span id="phoneError" style="color:red;"></span>
                     </div>
                     <p id="pass-error" style="color: red;"></p>
                     <div class="form-group">
@@ -158,13 +159,17 @@
 
   passError.textContent = "";
   passConfm.textContent=''
+  phoneErr.textContent =""
   
   console.log(mobile,"this is mobile....");
 // if(mobile.lenth>11 && mobile.length<10){
 //   phoneErr.textContent="enter valid 10 digit mobile number"
 // }
 
-
+if (!/^\d+$/.test(mobile)) {
+  phoneErr.textContent = "Mobile number can only contain digits.";
+  return false;
+}
   
  
   // Check if password is at least 8 characters long

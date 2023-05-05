@@ -156,7 +156,43 @@
             
             <div class="header-action-right">
               <div class="header-action-2">
+                <!-- if -->
+                <div>
 
+                
+            <div class="flex-w flex-c-m m-tb-10">
+                <div class="filter-container">
+                    <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter"
+                        id="filter-button">
+                        <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+                        <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                       
+                    </div>
+                    <div class="filter-options" id="filter-options">
+                    </div>
+                </div>
+                <% if(locals.shop){%>
+                  <form action="/search" method="GET" class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" name="search" class="form-control"
+                            value="" id="search" placeholder="Product Name.." />
+                        <datalist id="search_terms">
+                          <!-- for each loop -->
+
+                          
+                            <option value="">name of the products</option>
+
+                            <!-- loop close -->
+                        </datalist>
+                        <button class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search" type="submit">
+                            <i class="icon-search">Search</i>
+                        </button>
+                    </div>
+                </form>
+                  <%} %>
+                
+            </div>
+                </div>
                 
                 <div class="header-action-icon-2">
                   <a href="/view-wishlist">

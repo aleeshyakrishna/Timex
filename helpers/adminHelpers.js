@@ -485,8 +485,9 @@ module.exports={
                 db.coupon.find({
                     couponName:item}).then((response)=>{
                         resolve(response)
-                        console.log(response,"ppppppppppppppppppp");
-                    })
+
+
+                      })
         })
       }
 

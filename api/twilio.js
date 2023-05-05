@@ -1,15 +1,21 @@
-const accountSid = "ACc94a07aa30f93afbd05e3399dd39bcd8";
-const authToken = "6b297cce6c7e861211525ded56368611";
-// TWILIO_ACCOUNT_SID=ACc94a07aa30f93afbd05e3399dd39bcd8
-// TWILIO_AUTH_TOKEN=6b297cce6c7e861211525ded56368611
-// TWILIO_SERVICE_SID=VAd8d9ccbff6ac508038d13814af75d72d
-const client = require("twilio")(accountSid, authToken);
+// const accountSid = "AC894e4a0e0d9112bcc872e2f9a6d26634";
+// const authToken = "4330ecbc60a3ccfeb9921b86ec25c968";
+// // TWILIO_ACCOUNT_SID=AC894e4a0e0d9112bcc872e2f9a6d26634
+// // TWILIO_AUTH_TOKEN=4330ecbc60a3ccfeb9921b86ec25c968
+// // TWILIO_SERVICE_SID=VA1dafb98e762b3849ac62dbffa3e453de
+// const client = require("twilio")(accountSid, authToken);
+
+require('dotenv').config()
+const accountSid = process.env.TWILIO_ACCOUNT_SID
+const authToken = process.env.TWILIO_AUTH_TOKEN
+const serviceSid =process.env.TWILIO_SERVICE_SID
+const client = require('twilio')(accountSid, authToken);
 
 module.exports = {
   sendOtp: (mobile) => {
     return new Promise((resolve, reject) => {
       client.verify.v2
-        .services("VAd8d9ccbff6ac508038d13814af75d72d")
+        .services(serviceSid)
         .verifications.create({ to: `+91${mobile}`, channel: "sms" })
         .then((verification) => {
           console.log(verification.sid);
@@ -22,11 +28,11 @@ module.exports = {
     console.log(mobileNo, otp);
     return new Promise((resolve, reject) => {
       client.verify
-        .v2.services("VAd8d9ccbff6ac508038d13814af75d72d")
+        .v2.services(serviceSid)
         .verificationChecks
         .create({
           to: `+91${mobileNo}`,
-          code: otp
+          code: `${otp}`
         })
         .then((verificationCheck) => {
           resolve(verificationCheck);

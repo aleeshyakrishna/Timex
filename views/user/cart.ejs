@@ -207,8 +207,10 @@ function cartQuantity(cartId, prodId, Price, count) {
         console.log('out of stock');
 
       }else{
-
-        if (response.removeProduct) {
+        if(response.stock=='Full'){
+          console.log('out of stock');
+      }
+        else if(response.removeProduct) {
           setTimeout(function() {
             swal(
               'Deleted!',

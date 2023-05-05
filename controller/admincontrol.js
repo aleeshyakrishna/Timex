@@ -23,7 +23,6 @@ module.exports = {
     if (adminStatus) {
 
     const catGroup= await adminHelper.categoryGroup()
-
       for(let i=0;i<catGroup.length;i++){
 
         arrayCate[i]=catGroup[i]._id
@@ -141,11 +140,9 @@ module.exports = {
 //nowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
   viewProducts: async(req, res) => {
     const pageNum = req.query.page;
-    console.log(pageNum,"`````````````````````````````````````````````");
     const currentPage = pageNum;
     const perPage = 5;
     const documentCount = await userhelpers.documentCount();
-    console.log(documentCount,"///////////////////////");
     let pages2 = Math.ceil(parseInt(documentCount) / perPage);
     adminHelper.getViewProducts(pageNum, perPage).then((response) => {
       res.render("admin/view-product", {

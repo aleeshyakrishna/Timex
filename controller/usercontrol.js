@@ -2,23 +2,20 @@ require('dotenv').config()
 const adminhelpers = require("../helpers/adminhelpers");
 const userhelpers = require("../helpers/userhelpers");
 const twilioApi = require('../api/twilio');
+const {verifyOtp}=require('../api/twilio')
 
 const { category } = require("../model/connection");
 const {user} = require('../model/connection')
 
 var loginheader, loginStatus;
 
-// const accountSid = process.env.TWILIO_ACCOUNT_SID;
-// const authToken = process.env.TWILIO_AUTH_TOKEN;
-// const serviceSid = process.env.TWILIO_SERVICE_SID;
-// const client = require('twilio')(accountSid, authToken);
+
 
 module.exports = {
   getHome: async (req, res) => {
-    let userId;
+   
     if (req.session.userIn) {
-    // }
-    // if (loginStatus) {
+  
       let loginStatus=true;
       let user = req.session.user.username;
       let userId = req.session.user._id;
@@ -99,6 +96,7 @@ module.exports = {
   },
 
   shopView: (req, res) => {
+    let shop;
     if (req.session.userIn) {
       var user = req.session.user.username;
       var userId = req.session.user._id;
@@ -110,7 +108,7 @@ module.exports = {
           wishcount = await userhelpers.getWishCount(userId);
           console.log(wishcount, "this is count of wishlist");
           res.render("user/shop", {
-            response,
+            response,shop:true,
             cat,
             loginheader: true,
             cartCount,
@@ -125,8 +123,8 @@ module.exports = {
          
 
           res.render("user/shop", {
-            response,
-            cat,
+            response,shop:true,
+            cat,shop,
             loginheader: false,
           });
         });
@@ -245,13 +243,16 @@ VerifyOtp: (req, res) => {
           } 
           res.status(400).json({error:true, message: 'user not found pleace create an account'})
       }else{
-        req.session.otpErr = "Invalid otp.."
+        // req.session.otpErr = "Invalid otp.."
+        req.session.otpErr=true
+        res.status(400).json({Invaliderror:true, message: 'invalid  opt!!'})
+
         // res.redirect('/')
       }
     })
     .catch((err) => {
       console.log('err:',err);
-      // res.status(500).send({ message: "Error verifying OTP" });
+      res.status(500).send({ message: "cant verify the otp...!" });
     });
 },
 
@@ -345,8 +346,8 @@ VerifyOtp: (req, res) => {
     wishcount = await userhelpers.getWishCount(userId);
     let cartCount = await userhelpers.getCartCount(userId);
 
-    // console.log(products,"this is cart items");
-    // console.log(products[0].proDetails, "======");
+    console.log(products,"this is cart items");
+    // console.log("======",products[0].proDetails[0].Quantity, "======");
 
     
    
@@ -712,4 +713,55 @@ VerifyOtp: (req, res) => {
       }
     });
   },
+//current paneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+  search: async(req, res) => {        
+    const searchValue = req.query.search;
+    
+    if(req.session.loggedIn) {
+        let userId=req.session.user._id;
+        let user=req.session.user.username;
+        let products;
+      
+        let wishcount = await userhelpers.getWishCount(userId);
+        let cartCount = await userhelpers.getCartCount(userId);
+        let cat= await adminhelpers.findAllcategories()
+         
+       await userhelpers.search({ search: searchValue }).then((response) => {
+            if (response.length > 0) {
+              res.render('user/shop',
+               {userHeader:true,shop:true,
+                response,user,cartCount,
+                wishcount,cat,userName:user})
+            } else {
+            res.render('user/searchEmpty', {userHeader:true,shop:false,
+              user,cartCount,wishcount,userName:user})
+            }
+          }).catch((err) => {
+            res.json({
+              status: 'error',
+              message: err.message
+            });
+          });
+    }else{
+
+       userhelpers.search({ search: searchValue }).then(async(response) => {
+        let cat= await adminhelpers.findAllcategories()
+
+            if (response.length > 0) {
+              res.render('user/shop', {userHeader:false,response,cat,shop:true})
+            } else {
+            res.render('user/searchEmpty', {userHeader:false,response,shop:false})
+            }
+          }).catch((err) => {
+            res.json({
+              status: 'error',
+              message: err.message
+            });
+          });
+    }        
+},
+
+searchempty:(req,res)=>{
+  res.render('user/searchEmpty')
+}
 };
